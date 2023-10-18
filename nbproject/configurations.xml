@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>H_1_sector.h</itemPath>
+      <itemPath>hilbert_space.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -39,6 +40,8 @@
       </compileType>
       <item path="H_1_sector.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="hilbert_space.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -63,6 +66,8 @@
         </asmTool>
       </compileType>
       <item path="H_1_sector.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hilbert_space.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

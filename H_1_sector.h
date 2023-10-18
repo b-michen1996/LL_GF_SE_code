@@ -12,4 +12,4 @@
 
 #pragma once
 
-Eigen::SparseMatrix<std::complex<double>> H1(double L, int P_tot, int pc);
+Eigen::SparseMatrix<std::complex<double>> H1(double L, int P_tot, int pc, vec<states>);

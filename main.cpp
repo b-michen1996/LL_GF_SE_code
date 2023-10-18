@@ -21,7 +21,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {   
     // some parameters
-    double v_F
+    double v_F;
     double L = 100;
     double a = 0.1;        
     double E_c = 10;
