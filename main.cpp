@@ -19,9 +19,16 @@ using namespace std;
 /*
  * 
  */
-int main(int argc, char** argv) {
-    int a = 10;
-    string b = "Test_commit";
+int main(int argc, char** argv) {   
+    // some parameters
+    double v_F
+    double L = 100;
+    double a = 0.1;        
+    double E_c = 10;
+    
+    int run_Nr = 1;
+    
+    
 
     return 0;
 }
