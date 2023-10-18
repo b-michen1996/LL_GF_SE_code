@@ -21,23 +21,16 @@ struct HS{
      * E_C = v_F |P_c|. Everything is entirely determined by the positive integer 
      * p_c = |P_c| L / (2pi) */
     int pc;
-    vec<vec<vec<int>>>  HS_tot;
-    
-    int Ny;
-    double Z;
-    double deltaNL;
-    double c;
-    double delta;  
-    /*
-    Eigen::SparseMatrix<std::complex<double>> H1_stat;
-    Eigen::SparseMatrix<std::complex<double>> H2_stat;
-    Eigen::SparseMatrix<std::complex<double>> H3_stat;
-    Eigen::SparseMatrix<std::complex<double>> H4_stat;
-     */
-    
-HS(int in_pc);
+    vector<vector<vector<int>>>  HS_tot;
+        
+    //constructor method
+    HS(int in_pc);
 
-//void operator()(const state_type& x, state_type& dxdt, double t);
+    // return vector of Fock states (each in the form of a vector of occupation 
+    // numbers) in a given total momentum sector up to cut-off energy E_c
+    vector<vector<int>> sector(int p);
+
+
 };
 
 
