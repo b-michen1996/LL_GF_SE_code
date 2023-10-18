@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux
-CND_ARTIFACT_NAME_Debug=ll_gf_se
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/ll_gf_se
+CND_ARTIFACT_NAME_Debug=ll_gf_se_code
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/ll_gf_se_code
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
-CND_PACKAGE_NAME_Debug=llgfse.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/llgfse.tar
+CND_PACKAGE_NAME_Debug=llgfsecode.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/llgfsecode.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux
-CND_ARTIFACT_NAME_Release=ll_gf_se
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/ll_gf_se
+CND_ARTIFACT_NAME_Release=ll_gf_se_code
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/ll_gf_se_code
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
-CND_PACKAGE_NAME_Release=llgfse.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/llgfse.tar
+CND_PACKAGE_NAME_Release=llgfsecode.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/llgfsecode.tar
 #
 # include compiler specific variables
 #

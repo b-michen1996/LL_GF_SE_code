@@ -11,6 +11,8 @@
  */
 
 #include <cstdlib>
+#include <string>
+
 
 using namespace std;
 
@@ -19,6 +21,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {
     int a = 10;
+    string b = "Test_commit";
 
     return 0;
 }
