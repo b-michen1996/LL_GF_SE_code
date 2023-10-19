@@ -12,6 +12,8 @@
 
 #include <cstdlib>
 #include <string>
+#include <vector>
+#include <iostream>
 
 #include "hilbert_space.h"
 
@@ -29,8 +31,16 @@ int main(int argc, char** argv) {
     
     int run_Nr = 1;
     
+    int p_c = 5;
+    int index = 3;
     
+    /*
+    vector<int> on = occupation_number(index, p_c);
     
+    for (int n : on){
+        cout << n << ", ";
+    }
+     * */
 
     return 0;
 }
