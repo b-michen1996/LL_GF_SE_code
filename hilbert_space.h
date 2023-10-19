@@ -34,5 +34,5 @@ struct HS{
 
 vector<int> occupation_number(int index, int p_c);
 
-void loop_occupation_numbers(vector<vector<vector<int>>>  &HS_tot, int p_curr, int p_c);
+void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr, int p_c);
 

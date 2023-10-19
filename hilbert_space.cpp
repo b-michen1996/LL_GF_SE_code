@@ -62,10 +62,53 @@ HS::HS(int in_pc):p_c(in_pc){
     for (int j = p_c; j--; -p_c <= j ){
             // maximum occupation number 
             int n_j_max = int(abs(p_c / j));
-            
-            
-            
-        }
+    }
     
+    HS_tot.resize(2 * p_c);
+    
+    vector<int> state;
+    fill_state_list(HS_tot, state, 0, p_c);        
+            
+         
     
 };
+
+void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr, int p_curr, int p_c){
+    /* Recursive function to loop over all allowed states in the truncated Hilbert
+     * space and assign them to their respective total momentum sector */
+    
+    // check if we reached the full length, calculate total momentum and assign 
+    // to sector of Hilbert space
+    int state_length = state_curr.size();
+    if (state_length == 2 * p_c ){
+        int p_tot = 0;
+        
+        // calculate total momentum
+        for (int l = -p_c; l < p_c + 1; l++ ){
+            // skip l = 0
+            if (l == 0){
+            continue;
+            }        
+            p_tot = l * state_curr[l + p_c];        
+        }
+        
+        // index for total momentum sector
+        int l_p_tot = 0;
+                
+        if (p_tot < 0){ 
+            l_p_tot = p_tot + p_c;
+        }else{
+            l_p_tot = p_tot + p_c - 1;
+        }
+                    
+        // insert vector into list of states for respective total momentum sector
+        list[l_p_tot].insert(list[l_p_tot].end(), state_curr);
+    }else {
+        for (int l = 0; l++; l < p_c - E_curr){
+            int E = E_curr + l * state_length;
+        }
+        
+    }
+
+    return;
+}
