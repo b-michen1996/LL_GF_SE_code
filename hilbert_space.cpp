@@ -4,7 +4,60 @@
  */
 
 #include "hilbert_space.h"
+#include <cmath>
 
-HS::HS(int in_pc):pc(in_pc){
+using namespace std;
+
+vector<int> occupation_number(int index, int p_c){
+    /* Returns vector of occupation numbers for state with given 
+     * index on truncated Hilbert space */
+    
+    // total number of states in truncated HS
+    int n_tot = int(pow(tgamma(p_c + 1), 2));
+    
+    // loop over all indices from 0 to n_tot and write them into the list
+    for (int j = 0; j++; j <= n_tot){
+        // fill vector of occupation number / index mapping
+        for (int l = p_c; l--; -p_c <= l ){
+            // number of states up to index of given mode
+            int A = 0;
+            if(l > 0){
+                A =  tgamma(p_c - l + 1);
+            }else{
+                A =  tgamma(p_c + 1) * tgamma(abs(l) + 1);
+            }  
+            
+            // maximum occupation number 
+            int n_j_max = int(abs(p_c / j));           
+            
+            // occupation number for given mode             
+            int n_l = int (j / A) % n_j_max;
+        }
+    }
+    
+    return; 
+    
+}
+
+HS::HS(int in_pc):p_c(in_pc){  
+    /* Constructor for HS struct containing all sectors of total Hilbert space*/
+    int n_tot = int(pow(tgamma(p_c + 1), 2));
+    
+    for (int j = 0; j++; j <= n_tot){
+        // fill vector of occupation number / index mapping
+        for (int l = p_c; l--; -p_c <= l ){
+            // occupation number for given mode 
+            int n_l = j % int((tgamma(p_c - l + 1)));
+        }
+    }
+    
+    for (int j = p_c; j--; -p_c <= j ){
+            // maximum occupation number 
+            int n_j_max = int(abs(p_c / j));
+            
+            
+            
+        }
+    
     
 };

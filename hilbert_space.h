@@ -20,8 +20,9 @@ struct HS{
      * momentum sectors of the Hilbert space under consideration of the cut-off energy
      * E_C = v_F |P_c|. Everything is entirely determined by the positive integer 
      * p_c = |P_c| L / (2pi) */
-    int pc;
+    int p_c;
     vector<vector<vector<int>>>  HS_tot;
+    vector<vector<int>> index_occupation_number;
         
     //constructor method
     HS(int in_pc);
@@ -29,8 +30,7 @@ struct HS{
     // return vector of Fock states (each in the form of a vector of occupation 
     // numbers) in a given total momentum sector up to cut-off energy E_c
     vector<vector<int>> sector(int p);
-
-
 };
 
+vector<int> occupation_number(int index, int p_c);
 
