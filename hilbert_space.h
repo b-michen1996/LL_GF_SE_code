@@ -32,7 +32,6 @@ struct HS{
     vector<vector<int>> sector(int p);
 };
 
-vector<int> occupation_number(int index, int p_c);
 
-void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr, int p_c);
+void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr,  int p_c);
 
