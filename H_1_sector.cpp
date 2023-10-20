@@ -49,6 +49,6 @@ double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a
     return 0;
 }
 
-vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> lower val){
+vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
     /* return next value of multi-index val with bounds given by lower and upper. */
 };
