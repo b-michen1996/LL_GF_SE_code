@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/H_1_sector.o \
 	${OBJECTDIR}/hilbert_space.o \
 	${OBJECTDIR}/main.o
 
@@ -62,6 +63,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ll_gf_se_code: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ll_gf_se_code ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/H_1_sector.o: H_1_sector.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/H_1_sector.o H_1_sector.cpp
 
 ${OBJECTDIR}/hilbert_space.o: hilbert_space.cpp
 	${MKDIR} -p ${OBJECTDIR}

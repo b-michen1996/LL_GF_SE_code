@@ -12,4 +12,15 @@
 
 #pragma once
 
-Eigen::SparseMatrix<std::complex<double>> H1(double L, int P_tot, int pc, vec<states>);
+#include <vector>
+#include <eigen3/Eigen/Dense>
+#include <array>
+
+using namespace std;
+typedef Eigen::MatrixXd M;
+
+M H1_B(double L, double a, int P_tot, int pc, vector<vector<int>> HS_sector);
+
+double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a);
+
+vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> lower val);

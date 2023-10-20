@@ -34,13 +34,13 @@ int main(int argc, char** argv) {
     int p_c = 40;
     int index = 3;
     
-    
+    /*
     HS hd_test(p_c);
     
     
     cout << hd_test.HS_tot.size() << "\n";
     
-    /*
+    
     for (int l = 0; l < 2 * p_c + 1; l++){   
         int counter = 0;
         vector<vector<int>> m_sec_curr = hd_test.HS_tot[l];
