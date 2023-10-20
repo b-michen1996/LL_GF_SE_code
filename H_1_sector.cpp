@@ -12,8 +12,9 @@
 
 
 M H1_B(double L, double a, vector<vector<int>> HS_sector){
-    /* Calculates matrix representation of bosonic Hamiltonian H1_B on the subspace given by 
-     * the Fock states / vectors of occupation numbers in HS_sector. */
+    /* Calculates matrix representation of bosonic Hamiltonian H1_B on the
+     * subspace given by the Fock states / vectors of occupation numbers in 
+     * HS_sector. */
     int dim_sector = HS_sector.size();
     
     // initialize matrix to store results
@@ -30,7 +31,8 @@ M H1_B(double L, double a, vector<vector<int>> HS_sector){
     return result;
 };
 
-double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a){
+double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
+        double a){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     int dim = beta_1.size();
     
@@ -50,5 +52,23 @@ double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a
 }
 
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
-    /* return next value of multi-index val with bounds given by lower and upper. */
+    /* return next value of multi-index val with bounds given by lower and 
+     * upper. */
+    int dim = lower.size();
+    
+    for (int l = 0; l < dim; l++){
+        // increment val[l] by one
+        val[l] += 1;
+        
+        // if it exceeds the maximum value, set it to lower limit and move to next entry
+        // if it does not exceed the maximum value, return it
+        if (val[l] > upper[l]){
+            val[l] = lower[l];
+        } else{
+            return val;
+        }
+    }
+    // if all elements of the multi-index have reached the max, return empty vector
+    vector<int> empty;
+    return empty;
 };
