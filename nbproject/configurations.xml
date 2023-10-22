@@ -18,6 +18,7 @@
       <itemPath>H_1_sector.cpp</itemPath>
       <itemPath>hilbert_space.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>multi_index_aux.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -51,6 +52,8 @@
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="multi_index_aux.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="multi_index_aux.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
@@ -83,6 +86,8 @@
       <item path="hilbert_space.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="multi_index_aux.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="multi_index_aux.h" ex="false" tool="3" flavor2="0">
       </item>

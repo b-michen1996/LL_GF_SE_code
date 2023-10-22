@@ -4,9 +4,11 @@
  */
 
 #include "hilbert_space.h"
+#include "multi_index_aux.h"
+
 #include <cmath>
 #include <iostream>
-#include <omp.h>
+
 
 using namespace std;
 
@@ -32,11 +34,8 @@ void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr,
         // calculate total momentum
         for (int l = 0; l < 2 * p_c; l++ ){
             // momentum of current index
-            int p_l =  l - p_c;
+            int p_l =  momentum(l, p_c); 
             
-            if (l > p_c - 1){
-                p_l = l - p_c + 1;             
-            }        
             p_tot = p_tot + p_l * state_curr[l];                   
         }
         
@@ -49,12 +48,8 @@ void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr,
         
         
     }else { 
-        int pl_curr = 0;
-        if (state_length < p_c){
-            pl_curr = state_length - p_c;
-        }else{
-            pl_curr = state_length - p_c + 1;
-        }        
+        int pl_curr = momentum(state_length, p_c);
+        
         for (int n = 0; n * abs(pl_curr)  < p_c - E_curr +1; n++){
              
             int E = E_curr + n * abs(pl_curr);            

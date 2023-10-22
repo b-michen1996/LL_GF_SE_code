@@ -4,11 +4,12 @@
  */
 
 #include "H_1_sector.h"
+#include "multi_index_aux.h"
+
 #include <cmath>
 #include <array>
 #include <iostream>
 #include <omp.h>
-
 
 
 M H1_B(double L, double a, vector<vector<int>> HS_sector){
@@ -18,21 +19,27 @@ M H1_B(double L, double a, vector<vector<int>> HS_sector){
     int dim_sector = HS_sector.size();
     
     // initialize matrix to store results
-    M result = M::Zero(dim_sector,dim_sector);
+    M result = M::Zero(dim_sector,dim_sector);        
+    
+    complex<double> prefactor = 1i * a / (2 * M_PI * L);
     
     
-    // initialize empty sparse matrix H1_B
-    
+    //omp_set_num_threads(10);
+    #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         for (int l_2 = 0; l_2 < dim_sector; l_2++){
+            vector<int> beta_1 = HS_sector[l_1];
+            vector<int> beta_2 = HS_sector[l_2];
+            result(l_1, l_2) = H1_B_matrix_element(beta_1, beta_2, L, a);            
             }
         }
+    
     
     return result;
 };
 
 
-double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
+double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
         double a){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     int dim = beta_1.size();
@@ -51,70 +58,25 @@ double matrix_element(vector<int> beta_1, vector<int> beta_2, double L,
     double result = 0;
     
     while (alpha.size() > 0){
-        result += power_sqrt_l_over_l_mi(alpha) * function_A(alpha, L , a);
+        // We need to perform sums of multi-indices element-wise
+        vector<int> two_a_m_b1_m_b2(dim);
+        vector<int> a_m_b1(dim);
+        vector<int> a_m_b2(dim);
+        vector<int> b1_p_b2_m_a(dim);
+        for (int l= 0; l < dim; l++){ 
+            a_m_b1[l] = alpha[l] - beta_1[l];
+            a_m_b2[l] = alpha[l] - beta_2[l];
+            two_a_m_b1_m_b2[l] = a_m_b1[l] + a_m_b2[l];
+            b1_p_b2_m_a[l] = beta_1[l] + beta_2[l] - alpha[l];
+        }
+        
+        // calculate term in sum
+        result += power_sqrt_l_over_l_mi(two_a_m_b1_m_b2) * (function_A(a_m_b1, L , a) - function_A(a_m_b2, L , a)) 
+                * (1 - pow(-1, abs_mi(a_m_b1) + abs_mi(a_m_b2))) / (factorial_mi(a_m_b1) 
+                * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a));   
+                
         alpha = next_val(lower, upper, alpha);
     };
     
-    return result;
-}
-
-vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
-    /* return next value of multi-index val with bounds given by lower and 
-     * upper. */
-    int dim = lower.size();
-    
-    for (int l = 0; l < dim; l++){
-        // increment val[l] by one
-        val[l] += 1;
-        
-        // if it exceeds the maximum value, set it to lower limit and move to next entry
-        // if it does not exceed the maximum value, return it
-        if (val[l] > upper[l]){
-            val[l] = lower[l];
-        } else{
-            return val;
-        }
-    }
-    // if all elements of the multi-index have reached the max, return empty vector
-    vector<int> empty;
-    return empty;
-};
-
-
-double function_A(vector<int> alpha, double L, double a){
-    /* Function of multi-index that appears in matrix element of H1_B*/
-    double result = 0;
-    int p_c = int(alpha.size() / 2);
-    
-    for (int l = 0; l < 2 * p_c; l++ ){
-        // momentum of current index
-        int p_l =  l - p_c;
-            
-        if (l > p_c - 1){
-            p_l = l - p_c + 1;             
-        }        
-        
-        result += l * cos(2 * M_PI * p_l * a / L) * alpha[l];        
-        }
-    return result;
-}
-
-
-double power_sqrt_l_over_l_mi(vector<int> alpha){
-    /* Expression (\frac{\sqrt{l}}{l})^\alpha that appears in matrix element 
-     * of H1_B*/
-    double result = 0;
-    int p_c = int(alpha.size() / 2);
-    
-    for (int l = 0; l < 2 * p_c; l++ ){
-        // momentum of current index
-        int p_l =  l - p_c;
-            
-        if (l > p_c - 1){
-            p_l = l - p_c + 1;             
-        }        
-        
-        result += pow(sqrt(abs(p_l))/abs(p_l),  alpha[l]);        
-        }
-    return result;
+    return sqrt(factorial_mi(beta_1) * factorial_mi(beta_2)) * result;
 }
