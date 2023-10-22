@@ -31,13 +31,13 @@ M H1_B(double L, double a, vector<vector<int>> HS_sector){
     return result;
 };
 
+
 double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
         double a){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     int dim = beta_1.size();
     
-    // We need to loop over multi-index alpha, this gives array of lower and 
-    // upper bounds for each component.
+    // We need an  array of lower and upper bounds for each component.
     vector<int> lower(dim);
     vector<int> upper(dim);
     
@@ -47,8 +47,15 @@ double matrix_element(vector<int> beta_1, vector<int> beta_2, double L,
     }
     
     // loop over all allowed values of alpha using auxilliary function
+    vector<int> alpha = lower;
+    double result = 0;
     
-    return 0;
+    while (alpha.size() > 0){
+        result += power_sqrt_l_over_l_mi(alpha) * function_A(alpha, L , a);
+        alpha = next_val(lower, upper, alpha);
+    };
+    
+    return result;
 }
 
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
@@ -72,3 +79,42 @@ vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
     vector<int> empty;
     return empty;
 };
+
+
+double function_A(vector<int> alpha, double L, double a){
+    /* Function of multi-index that appears in matrix element of H1_B*/
+    double result = 0;
+    int p_c = int(alpha.size() / 2);
+    
+    for (int l = 0; l < 2 * p_c; l++ ){
+        // momentum of current index
+        int p_l =  l - p_c;
+            
+        if (l > p_c - 1){
+            p_l = l - p_c + 1;             
+        }        
+        
+        result += l * cos(2 * M_PI * p_l * a / L) * alpha[l];        
+        }
+    return result;
+}
+
+
+double power_sqrt_l_over_l_mi(vector<int> alpha){
+    /* Expression (\frac{\sqrt{l}}{l})^\alpha that appears in matrix element 
+     * of H1_B*/
+    double result = 0;
+    int p_c = int(alpha.size() / 2);
+    
+    for (int l = 0; l < 2 * p_c; l++ ){
+        // momentum of current index
+        int p_l =  l - p_c;
+            
+        if (l > p_c - 1){
+            p_l = l - p_c + 1;             
+        }        
+        
+        result += pow(sqrt(abs(p_l))/abs(p_l),  alpha[l]);        
+        }
+    return result;
+}

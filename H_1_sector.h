@@ -24,3 +24,9 @@ M H1_B(double L, double a, int P_tot, int pc, vector<vector<int>> HS_sector);
 double matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a);
 
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val);
+
+int momentum(vector<int> alpha)
+
+double function_A(vector<int> alpha, double L, double a);
+
+double power_sqrt_l_over_l_mi(vector<int> alpha);

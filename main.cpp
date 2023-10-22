@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "hilbert_space.h"
+#include "H_1_sector.h"
 
 using namespace std;
 
@@ -34,6 +35,12 @@ int main(int argc, char** argv) {
     int p_c = 40;
     int index = 3;
     
+    vector<int> beta_1 = {1,1,2,3,0,1};
+    vector<int> beta_2 = {1,2,2,3,0,5};
+    
+    double ma = matrix_element(beta_1, beta_2, L, a);
+    
+    cout << ma;
     /*
     HS hd_test(p_c);
     
