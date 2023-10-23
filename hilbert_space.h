@@ -33,5 +33,20 @@ struct HS{
 };
 
 
+struct HS_Ec_pc{
+    /* Struct that will create list of all Fock states belonging to the individual total 
+     * momentum sectors of the Hilbert space under constrained by the cut-off energy
+     * E_c (here taken as integer ignoring all prefactors). The momentum cut-off 
+     * p_c is independent. */
+    int E_c;
+    int p_c;
+   
+    vector<vector<vector<int>>>  HS_tot;
+            
+    //constructor method
+    HS_Ec_pc(int in_Ec, int in_pc);
+};
+
+
 void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr,  int p_c);
 

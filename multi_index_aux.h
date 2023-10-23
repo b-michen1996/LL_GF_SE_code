@@ -25,7 +25,11 @@ int factorial_mi(vector<int> alpha);
 
 int abs_mi(vector<int> alpha);
 
+double energy_H0(vector<int> alpha);
+
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val);
+
+vector<int> next_val_Ec(vector<int> val, int E_c);
 
 double function_A(vector<int> alpha, double factor, int p_c);
 

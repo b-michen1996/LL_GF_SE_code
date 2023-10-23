@@ -53,6 +53,16 @@ int abs_mi(vector<int> alpha){
 }
 
 
+double energy_H0(vector<int> alpha){
+    /* Energy of free Hamiltonian of a multi-index Fock state (up to prefactor).*/
+    int result = 0;
+    int p_c = int (alpha.size()/2);
+    
+    for (int l = 0; l < 2 * p_c; l++){
+        result += abs(momentum(l, p_c)) * alpha[l];
+    }
+    return result;
+}
 
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
     /* return next value of multi-index val with bounds given by lower and 
@@ -67,6 +77,29 @@ vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
         // if it does not exceed the maximum value, return it
         if (val[l] > upper[l]){
             val[l] = lower[l];
+        } else{
+            return val;
+        }
+    }
+    // if all elements of the multi-index have reached the max, return empty vector
+    vector<int> empty;
+    return empty;
+};
+
+
+vector<int> next_val_Ec(vector<int> val, int E_c){
+    /* return next value of multi-index val with bounds given by lower and 
+     * upper. */
+    int p_c = int(val.size()/2);
+    
+    for (int l = 2 * p_c - 1; l > -1; l--){
+        // increment val[l] by one
+        val[l] += 1;
+        
+        // if energy exceeds the maximum value, set entry to zero and move to next entry
+        // if it does not exceed the maximum value, return it
+        if (energy_H0(val) > E_c){
+            val[l] = 0;
         } else{
             return val;
         }

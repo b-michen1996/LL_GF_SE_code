@@ -22,6 +22,16 @@ HS::HS(int in_pc):p_c(in_pc){
     
 };
 
+
+HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec),p_c(in_pc){  
+    /* Constructor for HS struct containing all sectors of total Hilbert space*/
+    HS_tot.resize(2 * E_c + 1);     
+    
+    vector<int> state;
+            
+};
+
+
 void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr, int E_curr, int p_c){
     /* Recursive function to loop over all allowed states in the truncated Hilbert
      * space and assign them to their respective total momentum sector */
@@ -63,3 +73,5 @@ void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr,
 
     return;
 }
+
+

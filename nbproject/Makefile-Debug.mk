@@ -35,7 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/H_1_sector.o \
+	${OBJECTDIR}/Hamiltonian.o \
 	${OBJECTDIR}/hilbert_space.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/multi_index_aux.o
@@ -65,10 +65,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ll_gf_se_code: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ll_gf_se_code ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/H_1_sector.o: H_1_sector.cpp
+${OBJECTDIR}/Hamiltonian.o: Hamiltonian.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/H_1_sector.o H_1_sector.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Hamiltonian.o Hamiltonian.cpp
 
 ${OBJECTDIR}/hilbert_space.o: hilbert_space.cpp
 	${MKDIR} -p ${OBJECTDIR}

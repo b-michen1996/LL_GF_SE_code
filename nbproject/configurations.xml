@@ -4,7 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>H_1_sector.h</itemPath>
+      <itemPath>GF_SE.h</itemPath>
+      <itemPath>Hamiltonian.h</itemPath>
       <itemPath>hilbert_space.h</itemPath>
       <itemPath>multi_index_aux.h</itemPath>
     </logicalFolder>
@@ -15,7 +16,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>H_1_sector.cpp</itemPath>
+      <itemPath>Hamiltonian.cpp</itemPath>
       <itemPath>hilbert_space.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>multi_index_aux.cpp</itemPath>
@@ -45,9 +46,11 @@
           <commandLine>-std=c++17 -fopenmp</commandLine>
         </ccTool>
       </compileType>
-      <item path="H_1_sector.cpp" ex="false" tool="1" flavor2="0">
+      <item path="GF_SE.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="H_1_sector.h" ex="false" tool="3" flavor2="0">
+      <item path="Hamiltonian.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Hamiltonian.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hilbert_space.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -80,9 +83,11 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="H_1_sector.cpp" ex="false" tool="1" flavor2="0">
+      <item path="GF_SE.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="H_1_sector.h" ex="false" tool="3" flavor2="0">
+      <item path="Hamiltonian.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Hamiltonian.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hilbert_space.cpp" ex="false" tool="1" flavor2="0">
       </item>

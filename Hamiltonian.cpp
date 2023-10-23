@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/cppFiles/file.cc to edit this template
  */
 
-#include "H_1_sector.h"
+#include "Hamiltonian.h"
 #include "multi_index_aux.h"
 
 #include <cmath>
@@ -39,6 +39,38 @@ M H1_B(double L, double a, vector<vector<int>> HS_sector){
 };
 
 
+M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS_sector, int J){
+    /* Calculates matrix representation of the total bosonic Luttinger Hamiltonian 
+     * H0_B + J * H1_B on the subspace given by the Fock states / vectors of occupation 
+     * numbers in HS_sector. */
+    int dim_sector = HS_sector.size();
+    
+    // initialize matrix to store results
+    M result = M::Zero(dim_sector,dim_sector);        
+    
+    complex<double> prefactor_H0 = u * 2 * M_PI / L;    
+    complex<double> prefactor_H1 = 1i * a * U_m/ L;    
+    
+    //omp_set_num_threads(14);
+    #pragma omp parallel for
+    for (int l_1 = 0; l_1 < dim_sector; l_1++){
+        // set diagonal entry
+        result(l_1, l_1) = energy_H0(HS_sector[l_1]);
+        
+        // set off-diagonal entries
+        for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
+            vector<int> beta_1 = HS_sector[l_1];
+            vector<int> beta_2 = HS_sector[l_2];
+            result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(beta_1, beta_2, L, a); 
+            result(l_2, l_1) = -double(J) * prefactor_H1 * result(l_1, l_2);
+            }
+        }
+    
+    
+    return result;
+};
+        
+        
 double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
         double a){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/

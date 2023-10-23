@@ -21,5 +21,7 @@ typedef Eigen::MatrixXcd M;
 
 M H1_B(double L, double a, vector<vector<int>> HS_sector);
 
+M H_Luttinger_J(double K, double U_m, double L, double a, vector<vector<int>> HS_sector, int J);
+
 double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L, double a);
 

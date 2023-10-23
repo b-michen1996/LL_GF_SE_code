@@ -18,7 +18,7 @@
 #include <chrono>
 
 #include "hilbert_space.h"
-#include "H_1_sector.h"
+#include "Hamiltonian.h"
 #include "multi_index_aux.h"
 
 using namespace std;
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     
     int run_Nr = 1;
     
-    int p_c = 20;
+    int p_c = 15;
     int index = 3;
     
     /* 
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     HS hd_test(p_c);
      */ 
     
-    
+    /*
     HS hd_test(p_c);        
     
     for (int l = 0; l < 2 * p_c + 1; l++){          
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
         cout << "Current momentum sector " << l - p_c << ", size of sector " << m_sec_curr.size() <<"\n";
         cout << ", duration " << duration.count() <<"ms \n";
     }
-    
+    */
     /*
     HS hd_test(p_c);
     
