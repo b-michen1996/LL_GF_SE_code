@@ -20,6 +20,7 @@
 #include "hilbert_space.h"
 #include "Hamiltonian.h"
 #include "multi_index_aux.h"
+#include "GF_SE.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -33,12 +34,77 @@ int main(int argc, char** argv) {
     double v_F;
     double L = 100;
     double a = 1;        
-    double E_c = 10;
+    double u = 1.;
+    double U_m = 0.1;
+    int E_c = 15;
     
     int run_Nr = 1;
     
-    int p_c = 15;
+    int p_c = 14;
     int index = 3;
+    
+    /*
+    auto t1 = std::chrono::system_clock::now();
+    eigenstates_J_pm diagonalization_test(u, U_m, L, a, E_c, p_c);
+    auto t2 = high_resolution_clock::now();  
+    auto duration = duration_cast<milliseconds>(t2 - t1);
+    
+    cout << "Duration of full diagonalization " << duration.count() <<"ms \n";
+    */
+    
+    auto t1 = std::chrono::system_clock::now();
+    HS HS_test(p_c);
+    auto t2 = high_resolution_clock::now();  
+    auto duration = duration_cast<milliseconds>(t2 - t1);
+    cout << "Duration of HS " << duration.count() <<"ms \n";
+    
+    t1 = std::chrono::system_clock::now();
+    HS_Ec_pc HS_Ec_pc_test(E_c, p_c);
+    t2 = high_resolution_clock::now();  
+    duration = duration_cast<milliseconds>(t2 - t1);
+    cout << "Duration of HS_Ec_pc " << duration.count() <<"ms \n";
+    
+    for (int l = 0; l < 2 * p_c + 1; l++){   
+        int counter = 0;
+        vector<vector<int>> m_sec_curr_HS = HS_test.HS_tot[l];
+        vector<vector<int>> m_sec_curr_HS_Ec_pc = HS_Ec_pc_test.HS_tot[l];
+        
+        cout << "l = " << l << ", size of sector " << m_sec_curr_HS.size() << " vs"
+                << m_sec_curr_HS_Ec_pc.size() << "\n";
+        cout << "--------------------------------------\n";
+        
+        for (int j = 0; j < m_sec_curr_HS_Ec_pc.size(); j++){
+            vector<int> ES_1 = m_sec_curr_HS[j];
+            vector<int> ES_2 = m_sec_curr_HS_Ec_pc[j];
+            
+            for (int k = 0; k < 2 * p_c; k++){
+                if (abs(ES_1[k] - ES_2[k]) > 0){
+                    cout << "Attention";
+                }               
+            }
+        }
+        cout << "--------------------------------------\n";
+        
+        /*
+        for (vector<int> oc_n : m_sec_curr_HS){
+            //counter += 1;
+            //cout << "state number " << counter << " in sector " << l << "\n";
+            for (int n : oc_n){                   
+                cout << n << ", ";
+            }
+            cout << "\n";            
+        }
+        
+        for (vector<int> oc_n : m_sec_curr_HS_Ec_pc){
+            //counter += 1;
+            //cout << "state number " << counter << " in sector " << l << "\n";
+            for (int n : oc_n){                   
+                cout << n << ", ";
+            }
+            cout << "\n";            
+        }
+        cout << "--------------------------------------\n";*/
+    }
     
     return 0;
 }

@@ -36,8 +36,9 @@ HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec), p_c(in_pc){
         // calculate total momentum
         int p_tot = momentum_mi(state);
         
-        // index for total momentum sector
-        int l_p_tot = p_tot + p_c;
+        // index for total momentum sector (total momenta run from -E_c 
+        // to E_c and not -p_c to p_c!!
+        int l_p_tot = p_tot + E_c;
                                     
         // insert vector into list of states for respective total momentum sector
         HS_tot[l_p_tot].insert(HS_tot[l_p_tot].end(), state);

@@ -23,7 +23,7 @@ M H1_B(double L, double a, vector<vector<int>> HS_sector){
     
     complex<double> prefactor = 1i * a / (2 * M_PI * L);    
     
-    //omp_set_num_threads(14);
+    omp_set_num_threads(14);
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){

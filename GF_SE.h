@@ -13,26 +13,34 @@
 #pragma once
 
 #include <vector>
+#include <eigen3/Eigen/Eigenvalues>
+
+
 #include "hilbert_space.h"
 #include "Hamiltonian.h"
-#include "multi_index_aux.h"
 
 void GF_SE(double u, double U_m, double L, double a, int E_c, int p_c, int RunNr);
 
 struct eigenstates_J_pm{
-    /* Struct that contains eigenstates of bosonic Hamiltonian H0_B + J * H1_B */   
+    /* Struct that contains eigenstates of bosonic Hamiltonian H0_B + J * H1_B
+     * for both values of J = 1, -1.*/   
     double u;
     double U_m;
     double L;
     double a;
+    int E_c;
     int p_c;
     int J;
     
-    HS_Ec_pc* hilbert_space;
+    // Declare member of struct containing truncated Hilbert space sectors
+    HS_Ec_pc HS_truncated{E_c, p_c};
+    
+    // Vectors containing Eigensolvers filled with eigenstates and energies of
+    // each sector
+    vector<Eigen::SelfAdjointEigenSolver<M>>  energies_ES_sector_wise_J_1;
+    vector<Eigen::SelfAdjointEigenSolver<M>>  energies_ES_sector_wise_J_m1;
             
-    vector<vector<vector<int>>>  ES;
-        
     //constructor method
-    eigenstates_J_pm(double u, double U_m, double L, double a, int E_c, int p_c);
+    eigenstates_J_pm(double in_u, double in_U_m, double in_L, double in_a, int in_E_c, int in_p_c);
 
 };
