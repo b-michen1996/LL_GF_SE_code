@@ -41,6 +41,9 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <commandLine>-std=c++17 -fopenmp</commandLine>
+        </ccTool>
       </compileType>
       <item path="H_1_sector.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -9,7 +9,8 @@
 #include <cmath>
 
 int momentum(int l, int p_c){
-    /* Returns (integer) momentum for given index l and p_c */    
+    /* Returns (integer) momentum for given index l of a mutli-index
+     * and p_c */    
     int p_l =  l - p_c;
             
     if (l > p_c - 1){
@@ -58,7 +59,7 @@ vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
      * upper. */
     int dim = lower.size();
     
-    for (int l = 0; l < dim; l++){
+    for (int l = dim - 1; l > -1; l--){
         // increment val[l] by one
         val[l] += 1;
         
@@ -76,16 +77,15 @@ vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
 };
 
 
-double function_A(vector<int> alpha, double L, double a){
+double function_A(vector<int> alpha, double factor, int p_c){
     /* Function of multi-index that appears in matrix element of H1_B*/
-    double result = 0;
-    int p_c = int(alpha.size() / 2);
+    double result = 0;   
     
     for (int l = 0; l < 2 * p_c; l++ ){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
         
-        result += l * cos(2 * M_PI * p_l * a / L) * alpha[l];        
+        result += l * cos(factor * p_l) * alpha[l];        
         }
     return result;
 }
@@ -101,7 +101,7 @@ double power_sqrt_l_over_l_mi(vector<int> alpha){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
         
-        result += pow(sqrt(abs(p_l))/abs(p_l),  alpha[l]);        
+        result += pow(sqrt(abs(p_l))/p_l,  alpha[l]);        
     }
     return result;
 }

@@ -27,6 +27,6 @@ int abs_mi(vector<int> alpha);
 
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val);
 
-double function_A(vector<int> alpha, double L, double a);
+double function_A(vector<int> alpha, double factor, int p_c);
 
 double power_sqrt_l_over_l_mi(vector<int> alpha);

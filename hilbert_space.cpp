@@ -8,13 +8,14 @@
 
 #include <cmath>
 #include <iostream>
+#include <array>
 
 
 using namespace std;
 
 HS::HS(int in_pc):p_c(in_pc){  
     /* Constructor for HS struct containing all sectors of total Hilbert space*/
-    HS_tot.resize(2 * p_c + 1);
+    HS_tot.resize(2 * p_c + 1);     
     
     vector<int> state;
     fill_state_list(HS_tot, state, 0, p_c);           
@@ -28,7 +29,7 @@ void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr,
     // check if we reached the full length, if yes calculate total momentum and assign 
     // to sector of Hilbert space
     int state_length = state_curr.size();
-
+    
     if (state_length == 2 * p_c ){
         int p_tot = 0;     
         // calculate total momentum
