@@ -19,6 +19,8 @@ using namespace std;
 
 int momentum(int l, int p_c);
 
+int momentum_mi(vector<int> alpha);
+
 int factorial(int l);
 
 int factorial_mi(vector<int> alpha);

@@ -20,6 +20,22 @@ int momentum(int l, int p_c){
     return p_l;
 }
 
+int momentum_mi(vector<int> alpha){
+    /* Returns (integer) momentum for given multi-index alpha*/    
+    int p_c = int(alpha.size()/2);
+    
+    int p_tot = 0;     
+    // calculate total momentum
+    for (int l = 0; l < alpha.size(); l++ ){
+        // momentum of current index
+        int p_l =  momentum(l, p_c); 
+        // add to total momentum
+        p_tot = p_tot + p_l * alpha[l];                   
+    }
+    return p_tot;
+}
+
+
 int factorial(int l){
     /* Compute factorial*/
     int result  = 1;

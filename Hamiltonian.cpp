@@ -65,8 +65,6 @@ M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS
             result(l_2, l_1) = -double(J) * prefactor_H1 * result(l_1, l_2);
             }
         }
-    
-    
     return result;
 };
         

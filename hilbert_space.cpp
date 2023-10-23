@@ -23,11 +23,26 @@ HS::HS(int in_pc):p_c(in_pc){
 };
 
 
-HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec),p_c(in_pc){  
-    /* Constructor for HS struct containing all sectors of total Hilbert space*/
+HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec), p_c(in_pc){  
+    /* Constructor for HS_Ec_pc struct containing all sectors of total Hilbert space*/
     HS_tot.resize(2 * E_c + 1);     
     
-    vector<int> state;
+    // starting state of zeros
+    vector<int> state(2 * p_c, 0);
+    
+    // loop over all states up to energy cut-off E_c
+    while (state.size() > 0){
+        // calculate total momentum
+        int p_tot = momentum_mi(state);
+        
+        // index for total momentum sector
+        int l_p_tot = p_tot + p_c;
+                                    
+        // insert vector into list of states for respective total momentum sector
+        HS_tot[l_p_tot].insert(HS_tot[l_p_tot].end(), state);
+        
+        state = next_val_Ec(state, E_c);
+    }
             
 };
 
@@ -41,19 +56,11 @@ void fill_state_list(vector<vector<vector<int>>>&  list, vector<int> state_curr,
     int state_length = state_curr.size();
     
     if (state_length == 2 * p_c ){
-        int p_tot = 0;     
-        // calculate total momentum
-        for (int l = 0; l < 2 * p_c; l++ ){
-            // momentum of current index
-            int p_l =  momentum(l, p_c); 
-            
-            p_tot = p_tot + p_l * state_curr[l];                   
-        }
+        int p_tot = momentum_mi(state_curr);
         
         // index for total momentum sector
         int l_p_tot = p_tot + p_c;
-                
-                    
+                                    
         // insert vector into list of states for respective total momentum sector
         list[l_p_tot].insert(list[l_p_tot].end(), state_curr);
         
