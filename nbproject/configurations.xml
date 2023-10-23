@@ -16,6 +16,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>GF_SE.cpp</itemPath>
       <itemPath>Hamiltonian.cpp</itemPath>
       <itemPath>hilbert_space.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -46,6 +47,8 @@
           <commandLine>-std=c++17 -fopenmp</commandLine>
         </ccTool>
       </compileType>
+      <item path="GF_SE.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="GF_SE.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Hamiltonian.cpp" ex="false" tool="1" flavor2="0">
@@ -83,6 +86,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="GF_SE.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="GF_SE.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Hamiltonian.cpp" ex="false" tool="1" flavor2="0">

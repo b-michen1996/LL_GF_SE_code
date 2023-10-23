@@ -55,7 +55,7 @@ M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
-        result(l_1, l_1) = energy_H0(HS_sector[l_1]);
+        result(l_1, l_1) = u * energy_H0(HS_sector[l_1]);
         
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){

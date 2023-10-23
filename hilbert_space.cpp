@@ -24,7 +24,8 @@ HS::HS(int in_pc):p_c(in_pc){
 
 
 HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec), p_c(in_pc){  
-    /* Constructor for HS_Ec_pc struct containing all sectors of total Hilbert space*/
+    /* Constructor for HS_Ec_pc struct containing all sectors of total Hilbert 
+     * space that is truncated up to single-particle momentum p_c and energy E_c*/
     HS_tot.resize(2 * E_c + 1);     
     
     // starting state of zeros

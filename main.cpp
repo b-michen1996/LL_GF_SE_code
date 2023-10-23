@@ -40,6 +40,8 @@ int main(int argc, char** argv) {
     int p_c = 15;
     int index = 3;
     
+    return 0;
+}
     /* 
     vector<int> beta_1 = {0,2,0,0,0,0};
     
@@ -116,6 +118,5 @@ int main(int argc, char** argv) {
     
     
 
-    return 0;
-}
+
 

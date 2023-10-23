@@ -17,21 +17,22 @@
 #include "Hamiltonian.h"
 #include "multi_index_aux.h"
 
-void GF_SE(double L, double a, int p_c);
+void GF_SE(double u, double U_m, double L, double a, int E_c, int p_c, int RunNr);
 
 struct eigenstates_J_pm{
-    /* Struct that contains eigenstates of bosonic Hamiltonian H0_B + J * H1_B */
-   
+    /* Struct that contains eigenstates of bosonic Hamiltonian H0_B + J * H1_B */   
+    double u;
+    double U_m;
     double L;
     double a;
     int p_c;
     int J;
     
-    HS* hilbert_space;
+    HS_Ec_pc* hilbert_space;
             
-    vector<vector<vector<int>>>  eigenstates;
+    vector<vector<vector<int>>>  ES;
         
     //constructor method
-    eigenstates_J_pm(double int in_pc);
+    eigenstates_J_pm(double u, double U_m, double L, double a, int E_c, int p_c);
 
 };
