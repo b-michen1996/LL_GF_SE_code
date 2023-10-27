@@ -134,7 +134,7 @@ double function_A(vector<int> alpha, double factor, int p_c){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
         
-        result += l * cos(factor * p_l) * alpha[l];        
+        result += p_l * cos(factor * p_l) * alpha[l];        
         }
     return result;
 }

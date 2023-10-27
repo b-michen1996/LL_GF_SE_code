@@ -12,34 +12,7 @@
 #include <omp.h>
 
 
-M H1_B(double L, double a, vector<vector<int>> HS_sector){
-    /* Calculates matrix representation of bosonic Hamiltonian H1_B on the
-     * subspace given by the Fock states / vectors of occupation numbers in 
-     * HS_sector. */
-    int dim_sector = HS_sector.size();
-    
-    // initialize matrix to store results
-    M result = M::Zero(dim_sector,dim_sector);        
-    
-    complex<double> prefactor = 1i * a / (2 * M_PI * L);    
-    
-    omp_set_num_threads(14);
-    #pragma omp parallel for
-    for (int l_1 = 0; l_1 < dim_sector; l_1++){
-        for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
-            vector<int> beta_1 = HS_sector[l_1];
-            vector<int> beta_2 = HS_sector[l_2];
-            result(l_1, l_2) = prefactor * H1_B_matrix_element(beta_1, beta_2, L, a); 
-            result(l_2, l_1) = -prefactor * result(l_1, l_2);
-            }
-        }
-    
-    
-    return result;
-};
-
-
-M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS_sector, int J){
+M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alpha, vector<vector<int>> HS_sector, int J){
     /* Calculates matrix representation of the total bosonic Luttinger Hamiltonian 
      * H0_B + J * H1_B on the subspace given by the Fock states / vectors of occupation 
      * numbers in HS_sector. */
@@ -48,20 +21,20 @@ M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS
     // initialize matrix to store results
     M result = M::Zero(dim_sector,dim_sector);        
     
-    complex<double> prefactor_H0 = u * 2 * M_PI / L;    
-    complex<double> prefactor_H1 = 1i * a * U_m/ L;    
+    complex<double> prefactor_H0 = v_F * 2 * M_PI / (L * K);    
+    complex<double> prefactor_H1 = pow(2 * M_PI * alpha/ L, K - 1) * 1i * a * U_m/ L;    
     
     //omp_set_num_threads(14);
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
-        result(l_1, l_1) = u * energy_H0(HS_sector[l_1]);
+        result(l_1, l_1) = prefactor_H0 * energy_H0(HS_sector[l_1]);
         
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
             vector<int> beta_1 = HS_sector[l_1];
             vector<int> beta_2 = HS_sector[l_2];
-            result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(beta_1, beta_2, L, a); 
+            result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(K, beta_1, beta_2, L, a); 
             result(l_2, l_1) = -double(J) * prefactor_H1 * result(l_1, l_2);
             }
         }
@@ -69,7 +42,7 @@ M H_Luttinger_J(double u, double U_m, double L, double a, vector<vector<int>> HS
 };
         
         
-double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L, 
+double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, double L, 
         double a){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     
@@ -79,6 +52,7 @@ double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L,
     }
     
     int dim = beta_1.size();
+    double sqrt_K = sqrt(K);
 
     // We need an  array of lower and upper bounds for each component.
     vector<int> lower(dim);
@@ -110,28 +84,12 @@ double H1_B_matrix_element(vector<int> beta_1, vector<int> beta_2, double L,
 
         // calculate term in sum
         result += power_sqrt_l_over_l_mi(two_a_m_b1_m_b2) * (function_A(a_m_b1, factor, p_c) 
-                - function_A(a_m_b2, factor, p_c)) * (1 - pow(-1, abs_mi(a_m_b1) 
-                + abs_mi(a_m_b2))) / (factorial_mi(a_m_b1) 
+                - function_A(a_m_b2, factor, p_c)) * 2 * pow(sqrt_K, abs_mi(a_m_b1) 
+                + abs_mi(a_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a));   
         
-        /*
-        cout << "\n alpha = ";
-            for (int x : alpha){
-            cout << x << " ";
-        }
-        
-        cout << "\n result = " << result << "\n";
-        cout << " power_sqrt_l_over_l_mi(two_a_m_b1_m_b2) = " << power_sqrt_l_over_l_mi(two_a_m_b1_m_b2) << "\n";
-        cout << " test = " << abs_mi(a_m_b1) + abs_mi(a_m_b2) << "\n";
-        */
         alpha = next_val(lower, upper, alpha);
     };    
-    
-    /*
-    cout << "\n factorial b1 = " << (factorial_mi(beta_1)) << "\n";
-    cout << "\n factorial b2 = " << (factorial_mi(beta_2)) << "\n";
-    cout << "\n sqrt (b1! b2!) = " << sqrt(factorial_mi(beta_1) * factorial_mi(beta_2)) << "\n";
-    */
     
     return sqrt(factorial_mi(beta_1)) * sqrt(factorial_mi(beta_2)) * result;
 }

@@ -37,13 +37,19 @@ int main(int argc, char** argv) {
     double u = 1.;
     double U_m = 0.1;
     int E_c = 15;
+    double omega;
     
-    int run_Nr = 1;
+    int runNr = 1;
     
     int p_c = 14;
     int index = 3;
     
-    /*
+    //GF_SE_J_explicit(u, U_m, L, a, E_c, p_c, runNr);
+    
+    return 0;
+}
+
+/*
     auto t1 = std::chrono::system_clock::now();
     eigenstates_J_pm diagonalization_test(u, U_m, L, a, E_c, p_c);
     auto t2 = high_resolution_clock::now();  
@@ -51,7 +57,7 @@ int main(int argc, char** argv) {
     
     cout << "Duration of full diagonalization " << duration.count() <<"ms \n";
     */
-    
+    /*
     auto t1 = std::chrono::system_clock::now();
     HS HS_test(p_c);
     auto t2 = high_resolution_clock::now();  
@@ -104,10 +110,8 @@ int main(int argc, char** argv) {
             cout << "\n";            
         }
         cout << "--------------------------------------\n";*/
-    }
     
-    return 0;
-}
+    
     /* 
     vector<int> beta_1 = {0,2,0,0,0,0};
     
