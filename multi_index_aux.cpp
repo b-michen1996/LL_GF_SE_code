@@ -143,14 +143,33 @@ double function_A(vector<int> alpha, double factor, int p_c){
 double power_sqrt_l_over_l_mi(vector<int> alpha){
     /* Expression (\frac{\sqrt{l}}{l})^\alpha that appears in matrix element 
      * of H1_B*/
-    double result = 0;
+    double result = 1;
     int p_c = int(alpha.size() / 2);
     
     for (int l = 0; l < 2 * p_c; l++ ){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
         
-        result += pow(sqrt(abs(p_l))/p_l,  alpha[l]);        
+        result = result * pow(sqrt(abs(p_l))/p_l,  alpha[l]);        
+    }
+    return result;
+}
+
+
+double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
+    /* Expression that appears in matrix element 
+     * of f_r^B(k)*/
+    double result = 1;
+    int p_c = int(alpha.size() / 2);
+    
+    for (int l = 0; l < 2 * p_c; l++ ){
+        // momentum of current index
+        int p_l =  momentum(l, p_c);        
+        int sign = 1;
+        if (p_l < 0){
+            sign = -1;
+        }
+        result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);        
     }
     return result;
 }

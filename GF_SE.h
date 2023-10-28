@@ -49,6 +49,6 @@ struct eigenstates_J_pm{
 };
 
 
-M f_B_r(int r, vector<vector<int>> HS_sector_1, vector<vector<int>> HS_sector_2);
+M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS_sector_2);
 
-double f_B_r_matrix_element(int r, vector<int> beta_1, vector<int> beta_2);
+double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> beta_2);

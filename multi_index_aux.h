@@ -36,3 +36,5 @@ vector<int> next_val_Ec(vector<int> val, int E_c);
 double function_A(vector<int> alpha, double factor, int p_c);
 
 double power_sqrt_l_over_l_mi(vector<int> alpha);
+
+double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha);
