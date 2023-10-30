@@ -93,3 +93,35 @@ double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, dou
     
     return sqrt(factorial_mi(beta_1)) * sqrt(factorial_mi(beta_2)) * result;
 }
+
+
+eigenstates_J_pm::eigenstates_J_pm(double in_v_F, double in_K, double in_U_m, double in_L, 
+        double in_a, double in_alpha, int in_E_c, int in_p_c, int in_threads):v_F(in_v_F), 
+        K(in_K), U_m(in_U_m), L(in_L), a(in_a), alpha(in_alpha), E_c(in_E_c), p_c(in_p_c), 
+        threads(in_threads){
+    /* Constructor for HS_Ec_pc struct containing all sectors of total Hilbert 
+     * space that is truncated up to single-particle momentum p_c and energy E_c*/
+    
+    // Calculate all eigenstates and eigen-energies in each total momentum sector
+    energies_ES_sector_wise_J_1.resize(2 * E_c + 1);
+    energies_ES_sector_wise_J_m1.resize(2 * E_c + 1);
+    
+    omp_set_num_threads(threads);
+    #pragma omp parallel for
+    for (int l = 0; l < 2 * E_c + 1; l++){
+        // momentum sector
+        vector<vector<int>> HS_sector = HS_truncated.HS_tot[l];
+        
+        // Get matrix representation of bosonic Hamiltonian
+        M H_Luttinger_J_1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, 1);
+        M H_Luttinger_J_m1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, -1);
+        
+        // Calculate eigenstates and insert into global vector
+        Eigen::SelfAdjointEigenSolver<M> temp_J1(H_Luttinger_J_1_block);    
+        Eigen::SelfAdjointEigenSolver<M> temp_Jm1(H_Luttinger_J_m1_block);
+
+        energies_ES_sector_wise_J_1[l] = temp_J1;
+        energies_ES_sector_wise_J_m1[l]= temp_Jm1;
+    }   
+    
+}
