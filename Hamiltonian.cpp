@@ -24,20 +24,27 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alp
     complex<double> prefactor_H0 = v_F * 2 * M_PI / (L * K);    
     complex<double> prefactor_H1 = pow(2 * M_PI * alpha/ L, K - 1) * 1i * a * U_m/ L;    
     
+    double norm_H0 = 0;
+    double norm_H1 = 0;
+    
     //omp_set_num_threads(14);
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
         result(l_1, l_1) = prefactor_H0 * energy_H0(HS_sector[l_1]);
-        
+        norm_H0 += pow(abs(result(l_1, l_1)), 2); 
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
             vector<int> beta_1 = HS_sector[l_1];
             vector<int> beta_2 = HS_sector[l_2];
             result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(K, beta_1, beta_2, L, a); 
-            result(l_2, l_1) = -double(J) * prefactor_H1 * result(l_1, l_2);
+            result(l_2, l_1) = -result(l_1, l_2);
+            norm_H1 += 2 * pow(abs(result(l_1, l_2)), 2);
             }
         }
+    
+    cout << "norm H0 = " << sqrt(norm_H0) << ", norm H1 = " << sqrt(norm_H1) << "\n";
+    
     return result;
 };
         
@@ -47,7 +54,7 @@ double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, dou
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     
     // we can check immediately if the matrix element vanishes
-    if ((abs_mi(beta_1) + abs_mi(beta_2)) / 2 == 0){
+    if ((abs_mi(beta_1) + abs_mi(beta_2)) % 2 == 0){
         return 0;
     }
     
@@ -67,7 +74,7 @@ double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, dou
     vector<int> alpha = lower;
     double result = 0;
     double factor = 2 * M_PI * a / L;
-    int p_c = int(dim / 2);
+    int p_c = int(dim / 2 + 0.1);
     
     while (alpha.size() > 0){
         // We need to perform sums of multi-indices element-wise
@@ -83,14 +90,14 @@ double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, dou
         }
 
         // calculate term in sum
-        result += power_sqrt_l_over_l_mi(two_a_m_b1_m_b2) * (function_A(a_m_b1, factor, p_c) 
+        result += power_sqrt_l_over_l_mi(two_a_m_b1_m_b2)  * (function_A(a_m_b1, factor, p_c) 
                 - function_A(a_m_b2, factor, p_c)) * 2 * pow(sqrt_K, abs_mi(a_m_b1) 
                 + abs_mi(a_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a));   
         
         alpha = next_val(lower, upper, alpha);
     };    
-    
+
     return sqrt(factorial_mi(beta_1)) * sqrt(factorial_mi(beta_2)) * result;
 }
 
@@ -115,6 +122,9 @@ eigenstates_J_pm::eigenstates_J_pm(double in_v_F, double in_K, double in_U_m, do
         // Get matrix representation of bosonic Hamiltonian
         M H_Luttinger_J_1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, 1);
         M H_Luttinger_J_m1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, -1);
+        
+        cout << "total momentum sector " << l - E_c << ", norm of Hamiltonian "
+                << H_Luttinger_J_1_block.norm() << "\n";
         
         // Calculate eigenstates and insert into global vector
         Eigen::SelfAdjointEigenSolver<M> temp_J1(H_Luttinger_J_1_block);    

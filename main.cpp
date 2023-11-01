@@ -29,27 +29,28 @@ typedef Eigen::MatrixXcd M;
 /*
  * 
  */
-int main(int argc, char** argv) {   
+int main(int argc, char** argv){   
     // some parameters
-    double v_F = 0.5;
+    double v_F = 3;
     double K = 1;
-    double L = 1000;
+    double L = 500;
     double a = 1;        
-    double U_m = 0;
-    int E_c = 8;
+    double U_m = 1;
+    int E_c = 10;
     
-    double alpha = 0.001;
+    double alpha = 0.0001;
     double eta = 0.01;
     
     double omega = 0.0;
-    double beta = 8;
+    double beta = 100;
     
-    int runNr = 5;
-    int threads = 14;
+    int runNr = 3;
+    int threads = 15;
     
-    int p_c = 8;
+    int p_c = 6;
     
-    GF_SE_J_explicit(v_F, K, U_m, L, a, alpha, eta, E_c, p_c, omega, beta, runNr, threads);
+    GF_SE_J_explicit(v_F, K, U_m, L, a, alpha, eta, E_c, p_c, omega, 
+            beta, runNr, threads);
     
     return 0;
 }

@@ -60,7 +60,7 @@ def calc_spectrum(G_RR, G_RL, G_LR, G_LL, p_c, omega):
         GF_k[1,0] = G_LR[l]
         GF_k[1,1] = G_LL[l]
         
-        H_e_k = 1j * omega * np.identity(2) - np.linalg.inv(GF_k)
+        H_e_k = omega * np.identity(2) - np.linalg.inv(GF_k)
         
         eigenvalues, eigenvectors = np.linalg.eig(GF_k)
         
@@ -68,8 +68,6 @@ def calc_spectrum(G_RR, G_RL, G_LR, G_LL, p_c, omega):
         spectrum[l, 1] = eigenvalues[1]
     
     return spectrum
-    
-    
 
 
 def main():      

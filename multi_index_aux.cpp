@@ -72,7 +72,7 @@ int abs_mi(vector<int> alpha){
 double energy_H0(vector<int> alpha){
     /* Energy of free Hamiltonian of a multi-index Fock state (up to prefactor).*/
     int result = 0;
-    int p_c = int (alpha.size()/2);
+    int p_c = int (alpha.size()/2 + 0.1);
     
     for (int l = 0; l < 2 * p_c; l++){
         result += abs(momentum(l, p_c)) * alpha[l];
@@ -104,9 +104,8 @@ vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
 
 
 vector<int> next_val_Ec(vector<int> val, int E_c){
-    /* return next value of multi-index val with bounds given by lower and 
-     * upper. */
-    int p_c = int(val.size()/2);
+    /* return next value of multi-index with upper energy bound E_c*/
+    int p_c = int(val.size()/2 +0.1);
     
     for (int l = 2 * p_c - 1; l > -1; l--){
         // increment val[l] by one

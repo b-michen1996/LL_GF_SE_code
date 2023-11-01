@@ -34,6 +34,8 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
     // Calculate partition function
     double Z = 0;
     
+    ofstream energies(output_folder + "/energies.csv"); 
+    
     for (int l = 0; l < 2 * E_c + 1; l++){
         double Z_sector_J_1 = 0;
         double Z_sector_J_m1 = 0;
@@ -49,6 +51,9 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
             // cout << E_J_1_j << ", " << E_J_m1_j << "\n";
             Z_sector_J_1 += exp(- beta * E_J_1_j);
             Z_sector_J_m1 += exp(- beta * E_J_m1_j);
+            
+                    
+            energies << l - E_c << " " << E_J_1_j << "\n";
         }
         /*
         cout << "Z_sector_J_1 = " << Z_sector_J_1 << ", Z_sector_J_m1 = " 
@@ -56,6 +61,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
         */
         Z += Z_sector_J_1 + Z_sector_J_m1;        
     }
+    energies.close();
     
     // calculate elements of retarded GF for each k from -p_c to p_c and store 
     // in vector
@@ -70,8 +76,6 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
     #pragma omp parallel for
     for (int l = 0; l < 2 * p_c + 1; l++ ){
         int k = l - p_c;
-        int r_1 = 1;
-        int r_2 = -1;
         
         vector<complex<double>> G_R_R = K_L_summation(k, E_c, 1, 
                 1, K, eta, omega, beta, &ES);
@@ -140,6 +144,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
             G_LL_file << G_LL[l].real() << "-" << abs(G_LL[l].imag()) << "j \n";
         } 
     }
+    
     G_RR_file.close();
     G_RL_file.close();
     G_LR_file.close();
@@ -244,47 +249,59 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
         vector<vector<int>> HS_sector_l2 = ES -> HS_truncated.HS_tot[l_2];        
                 
         M f_r1 = f_B_r(r_1, K, HS_sector_l1, HS_sector_l2);
-        M f_r2 = f_B_r(r_2, K, HS_sector_l1, HS_sector_l2);
-                        
+        M f_r2 = f_B_r(r_2, K, HS_sector_l1, HS_sector_l2);               
+        
+        // do matrix multiplication to obtain all scalar products
+        M matrix_rep_f_r1 = Eigen_J_1_l1.eigenvectors() * (f_r1 * Eigen_J_1_l2.eigenvectors());
+        M matrix_rep_f_r2 = Eigen_J_1_l1.eigenvectors() * (f_r2 * Eigen_J_1_l2.eigenvectors());
+        
         // carry out summation    
         int dim_sec_l1 = Eigen_J_1_l1.eigenvalues().size();
         int dim_sec_l2 = Eigen_J_1_l2.eigenvalues().size();
         
+        for (int j_2 = 0; j_2 < dim_sec_l2;  j_2++){  
+            // get eigenenergies for j_2       
+            double E_J_1_j2 = Eigen_J_1_l2.eigenvalues()(j_2); 
+            double E_J_m1_j2 = Eigen_J_m1_l2.eigenvalues()(j_2); 
+            
+            /*
+            // get eigenstates for j_2
+            Eigen::VectorXcd EV_J_1_j2 = Eigen_J_1_l2.eigenvectors().col(j_2);
+            Eigen::VectorXcd EV_J_m1_j2 = Eigen_J_m1_l2.eigenvectors().col(j_2); 
+            
+            // carry out multiplication by f_B_r
+            Eigen::VectorXcd f_r1_EV_J_1_j2 = f_r1 * EV_J_1_j2;
+            Eigen::VectorXcd f_r2_EV_J_1_j2 = f_r2 * EV_J_1_j2;
+            */
+            for (int j_1 = 0; j_1 < dim_sec_l1;  j_1++){
+                // get eigenenergies for j_1        
+                double E_J_1_j1 = Eigen_J_1_l1.eigenvalues()(j_1); 
+                double E_J_m1_j1 = Eigen_J_m1_l1.eigenvalues()(j_1);
+                
+                /*
+                // get eigenstates for j_1
+                Eigen::VectorXcd EV_J_1_j1 = Eigen_J_1_l1.eigenvectors().col(j_1);
+                Eigen::VectorXcd EV_J_m1_j1 = Eigen_J_m1_l1.eigenvectors().col(j_1);
 
-        for (int j_1 = 0; j_1 < dim_sec_l1;  j_1++){
-            for (int j_2 = 0; j_2 < dim_sec_l2;  j_2++){  
-                // translate into const to avoid conflict with eigen. This is 
-                // not nice!
-                const int j_1_c = j_1;
-                const int j_2_c = j_2;
-                
-                // get eigenenergies
-                double E_J_1_j1 = Eigen_J_1_l1.eigenvalues().coeffRef(j_1_c);
-                double E_J_1_j2 = Eigen_J_1_l2.eigenvalues().coeffRef(j_2_c); 
-                double E_J_m1_j1 = Eigen_J_m1_l1.eigenvalues().coeffRef(j_1_c);
-                double E_J_m1_j2 = Eigen_J_m1_l2.eigenvalues().coeffRef(j_2_c); 
-                
-                // get eigenstates
-                Eigen::VectorXcd EV_J_1_j1 = Eigen_J_1_l1.eigenvectors().col(j_1_c);
-                Eigen::VectorXcd EV_J_1_j2 = Eigen_J_1_l2.eigenvectors().col(j_2_c);
-                Eigen::VectorXcd EV_J_m1_j1 = Eigen_J_m1_l1.eigenvectors().col(j_1_c);
-                Eigen::VectorXcd EV_J_m1_j2 = Eigen_J_m1_l2.eigenvectors().col(j_2_c);                
                 
                 result_J_1 += EV_J_1_j1.dot(f_r1 * EV_J_m1_j2) * EV_J_1_j1.dot(f_r2 * EV_J_m1_j2) 
                         * (exp(- beta * E_J_1_j1) + exp(- beta * E_J_m1_j2)) / (omega + E_J_1_j1
                         - E_J_m1_j2 + 1i * eta);
-                
+                cout << result_J_1 << "\n";
+                 * */
+                /*
                 result_J_m1 += EV_J_m1_j1.dot(f_r1 * EV_J_1_j2) * EV_J_m1_j1.dot(f_r2 * EV_J_1_j2) 
                         * (exp(- beta * E_J_m1_j1) + exp(- beta * E_J_1_j2)) / (omega + E_J_m1_j1
                         - E_J_1_j2 + 1i * eta);
-                
-                result_only_1 += EV_J_1_j1.dot(f_r1 * EV_J_1_j2) * EV_J_1_j1.dot(f_r2 * EV_J_1_j2) 
+                */
+                result_only_1 += matrix_rep_f_r1(j_1, j_2) * conj(matrix_rep_f_r2(j_1, j_2)) 
                         * (exp(- beta * E_J_1_j1) + exp(- beta * E_J_1_j2)) / (omega + E_J_1_j1
                         - E_J_1_j2 + 1i * eta);
-                
+                /*
                 result_only_m1 += EV_J_m1_j1.dot(f_r1 * EV_J_m1_j2) * EV_J_m1_j1.dot(f_r2 * EV_J_m1_j2) 
                         * (exp(- beta * E_J_m1_j1) + exp(- beta * E_J_m1_j2)) / (omega + E_J_m1_j1
                         - E_J_m1_j2 + 1i * eta);
+                 * */
             }
         }
         
@@ -292,6 +309,7 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
     
     vector<complex<double>> result = {result_J_1, result_J_m1, result_only_1, result_only_m1};
     
+    result = {result_only_1, result_only_1, result_only_1, result_only_m1};
     
     return result;
 }
