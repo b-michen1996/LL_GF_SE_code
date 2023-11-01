@@ -19,13 +19,13 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
     // Create folder and save parameters
     string output_folder = "result_run_" + to_string(runNr);
     filesystem::create_directories(output_folder);
-    ofstream result(output_folder + "/result.csv");
     ofstream parameters(output_folder + "/parameters.csv");    
     
     parameters << "v_F " << v_F << "\n" << "K " << K << "\n" << "alpha " << alpha << "\n" 
             << "eta " << eta << "\n" << "U_m " << U_m << "\n" << "L " << L << "\n" 
             << "a " << a << "\n" << "E_c " << E_c << "\n" << "p_c " << p_c << "\n"  
-            << "beta " << beta << "\n" << "runNr " << runNr << "\n" << "threads " << threads;
+            << "omega " << omega << "\n" << "beta " << beta << "\n" 
+            << "runNr " << runNr << "\n" << "threads " << threads;
     parameters.close();
     
     // Calculate eigenstates
@@ -34,7 +34,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
     // Calculate partition function
     double Z = 0;
     
-    for (int l = 0; l < 2 * p_c + 1; l++){
+    for (int l = 0; l < 2 * E_c + 1; l++){
         double Z_sector_J_1 = 0;
         double Z_sector_J_m1 = 0;
         
@@ -46,59 +46,104 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
         for (int j = 0; j < dim_sector; j++){
             double E_J_1_j = solver_curr_J_1.eigenvalues().coeffRef(j);
             double E_J_m1_j = solver_curr_J_m1.eigenvalues().coeffRef(j);
-            cout << E_J_1_j << ", " << E_J_m1_j << "\n";
+            // cout << E_J_1_j << ", " << E_J_m1_j << "\n";
             Z_sector_J_1 += exp(- beta * E_J_1_j);
             Z_sector_J_m1 += exp(- beta * E_J_m1_j);
         }
+        /*
         cout << "Z_sector_J_1 = " << Z_sector_J_1 << ", Z_sector_J_m1 = " 
                 << Z_sector_J_m1 << "\n";
-        
+        */
         Z += Z_sector_J_1 + Z_sector_J_m1;        
     }
     
-    // calculate elements of retarded GF for each k from -p_c to p_c 
-    vector<complex<double>> G_RR;
-    vector<complex<double>> G_RL;
-    vector<complex<double>> G_LR;
-    vector<complex<double>> G_LL;
+    // calculate elements of retarded GF for each k from -p_c to p_c and store 
+    // in vector
+    vector<complex<double>> G_RR(2 * p_c + 1, 0.);
+    vector<complex<double>> G_RL(2 * p_c + 1, 0.);
+    vector<complex<double>> G_LR(2 * p_c + 1, 0.);
+    vector<complex<double>> G_LL(2 * p_c + 1, 0.);
     
     double prefactor = pow(2 * M_PI * alpha / L, pow(1 - K, 2) / (2 * K)) / (Z * pow(L, 2));
     
-    for (int l = 0; l < 2 * E_c + 1; l++ ){
-        int k = l - E_c;
+    omp_set_num_threads(threads);
+    #pragma omp parallel for
+    for (int l = 0; l < 2 * p_c + 1; l++ ){
+        int k = l - p_c;
         int r_1 = 1;
         int r_2 = -1;
         
         vector<complex<double>> G_R_R = K_L_summation(k, E_c, 1, 
                 1, K, eta, omega, beta, &ES);
-        
+        G_RR[l] = prefactor * (G_R_R[0] + G_R_R[1]);
+        /*
         cout << "k = " << k << ", G_R_R = " << prefactor * G_R_R[0] << ", " << prefactor * G_R_R[1] 
                 << prefactor * G_R_R[2] << ", " << prefactor * G_R_R[3] << "\n";
+        */
         
-        /*
         vector<complex<double>> G_R_L = K_L_summation(k, E_c, 1, 
                 -1, K, eta, omega, beta, &ES);
-        
+        G_RL[l] = prefactor * (G_R_L[0] + G_R_L[1]);
+        /*
         cout << "k = " << k << ", G_R_L = " << G_R_L[0] << ", " << G_R_L[1] 
                 << G_R_L[2] << ", " << G_R_L[3] << "\n";
-        
+        */
         vector<complex<double>> G_L_R = K_L_summation(k, E_c, -1, 
                 1, K, eta, omega, beta, &ES);
-        
+        G_LR[l] = prefactor * (G_L_R[0] + G_L_R[1]);
+        /*
         cout << "k = " << k << ", G_L_R = " << G_L_R[0] << ", " << G_L_R[1] 
                 << G_L_R[2] << ", " << G_L_R[3] << "\n";
-        
+        */
         vector<complex<double>> G_L_L = K_L_summation(k, E_c, -1, 
                 -1, K, eta, omega, beta, &ES);
-        
+        G_LL[l] = prefactor * (G_L_L[0] + G_L_L[1]);
+        /*
         cout << "k = " << k << ", G_L_L = " << G_L_L[0] << ", " << G_L_L[1] 
                 << G_L_L[2] << ", " << G_L_L[3] << "\n";
-        
         */
- 
+        cout << "Calculation done for k = " << k << "\n";
     } 
     
+    // save result to file
+    ofstream G_RR_file(output_folder + "/G_RR.csv");
+    ofstream G_RL_file(output_folder + "/G_RL.csv");
+    ofstream G_LR_file(output_folder + "/G_LR.csv");
+    ofstream G_LL_file(output_folder + "/G_LL.csv");
     
+    for (int l = 0; l < 2 * p_c + 1; l++ ){
+        if (G_RR[l].imag() > 0){
+            G_RR_file << G_RR[l].real() << "+" << G_RR[l].imag() << "j \n";
+        }
+        else{
+            G_RR_file << G_RR[l].real() << "-" << abs(G_RR[l].imag()) << "j \n";
+        } 
+        
+        if (G_RL[l].imag() > 0){
+            G_RL_file << G_RL[l].real() << "+" << G_RL[l].imag() << "j \n";
+        }
+        else{
+            G_RL_file << G_RL[l].real() << "-" << abs(G_RL[l].imag()) << "j \n";
+        } 
+        
+        if (G_LR[l].imag() > 0){
+            G_LR_file << G_LR[l].real() << "+" << G_LR[l].imag() << "j \n";
+        }
+        else{
+            G_LR_file << G_LR[l].real() << "-" << abs(G_LR[l].imag()) << "j \n";
+        } 
+        
+        if (G_LL[l].imag() > 0){
+            G_LL_file << G_LL[l].real() << "+" << G_LL[l].imag() << "j \n";
+        }
+        else{
+            G_LL_file << G_LL[l].real() << "-" << abs(G_LL[l].imag()) << "j \n";
+        } 
+    }
+    G_RR_file.close();
+    G_RL_file.close();
+    G_LR_file.close();
+    G_LL_file.close();
     return;
 }
 

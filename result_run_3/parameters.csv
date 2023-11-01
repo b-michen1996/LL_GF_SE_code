@@ -1,13 +1,13 @@
 v_F 0.5
 K 0.71
-alpha 0.01
+alpha 0.001
 eta 0.01
 U_m 1.5
-L 10
+L 1000
 a 1
 E_c 8
 p_c 8
 omega 0
-beta 1.5
-runNr 1
+beta 8
+runNr 3
 threads 14
