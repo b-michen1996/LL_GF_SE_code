@@ -21,6 +21,7 @@
 #include "Hamiltonian.h"
 #include "multi_index_aux.h"
 #include "GF_SE.h"
+#include "Export_f_B_only.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -31,26 +32,31 @@ typedef Eigen::MatrixXcd M;
  */
 int main(int argc, char** argv){   
     // some parameters
-    double v_F = 3;
-    double K = 1;
-    double L = 500;
+    double v_F = 1;
+    double K = 0.75;
+    double L = 100;
     double a = 1;        
-    double U_m = 1;
-    int E_c = 10;
+    double U_m = 0;
+    int E_c = 6;
     
-    double alpha = 0.0001;
+    double alpha = 0.01;
     double eta = 0.01;
     
-    double omega = 0.0;
-    double beta = 100;
+    double omega = 0.00;
+    double beta = 1000000;
     
-    int runNr = 3;
+    int runNr = 8;
     int threads = 15;
     
     int p_c = 6;
     
+    /*
     GF_SE_J_explicit(v_F, K, U_m, L, a, alpha, eta, E_c, p_c, omega, 
             beta, runNr, threads);
+    */
+    
+    export_f_B(v_F, K, U_m, L, a, alpha, E_c, p_c,
+            runNr, threads);
     
     return 0;
 }

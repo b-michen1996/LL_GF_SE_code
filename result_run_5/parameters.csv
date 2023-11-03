@@ -1,0 +1,13 @@
+v_F 0.3
+K 1
+alpha 0.01
+eta 0.01
+U_m 0
+L 100
+a 1
+E_c 10
+p_c 10
+omega 0
+beta 10
+runNr 5
+threads 15

@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>Export_f_B_only.h</itemPath>
       <itemPath>GF_SE.h</itemPath>
       <itemPath>Hamiltonian.h</itemPath>
       <itemPath>hilbert_space.h</itemPath>
@@ -16,6 +17,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>Export_f_B_only.cpp</itemPath>
       <itemPath>GF_SE.cpp</itemPath>
       <itemPath>Hamiltonian.cpp</itemPath>
       <itemPath>hilbert_space.cpp</itemPath>
@@ -47,6 +49,10 @@
           <commandLine>-std=c++17 -fopenmp</commandLine>
         </ccTool>
       </compileType>
+      <item path="Export_f_B_only.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Export_f_B_only.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="GF_SE.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="GF_SE.h" ex="false" tool="3" flavor2="0">
@@ -86,6 +92,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="Export_f_B_only.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Export_f_B_only.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="GF_SE.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="GF_SE.h" ex="false" tool="3" flavor2="0">

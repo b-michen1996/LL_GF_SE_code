@@ -14,7 +14,8 @@ def plot_spectrum(G_RR, G_RL, G_LR, G_LL, parameters):
     L = parameters[5,1]
     E_c = int(parameters[7,1])
     p_c = int(parameters[8,1])    
-    omega = int(parameters[9,1])    
+    omega = parameters[9,1]
+
     
     # calculate spectrum    
     spectrum = calc_spectrum(G_RR, G_RL, G_LR, G_LL, p_c, omega)
@@ -66,11 +67,13 @@ def calc_spectrum(G_RR, G_RL, G_LR, G_LL, p_c, omega):
             H_e_k = H_e_k - np.linalg.inv(GF_k)
         except:
             print("Warning: singular GF at k = " + str(l - p_c) + "!")
-        
-        eigenvalues, eigenvectors = np.linalg.eig(GF_k)
+                 
+        eigenvalues, eigenvectors = np.linalg.eig(H_e_k)
         
         spectrum[l, 0] = eigenvalues[0]
         spectrum[l, 1] = eigenvalues[1]
+        
+        print("l = ", l, ", k = ", l - p_c, "E = ", spectrum[l, :])
     
     return spectrum
 

@@ -159,7 +159,7 @@ double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
     /* Expression that appears in matrix element 
      * of f_r^B(k)*/
     double result = 1;
-    int p_c = int(alpha.size() / 2);
+    int p_c = int(alpha.size() / 2 + 0.1);
     
     for (int l = 0; l < 2 * p_c; l++ ){
         // momentum of current index

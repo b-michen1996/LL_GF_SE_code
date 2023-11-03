@@ -1,0 +1,13 @@
+v_F 1
+K 1
+alpha 0.01
+eta 0.01
+U_m 0
+L 200
+a 1
+E_c 8
+p_c 8
+omega 0
+beta 1e+06
+runNr 8
+threads 15

@@ -70,7 +70,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
     vector<complex<double>> G_LR(2 * p_c + 1, 0.);
     vector<complex<double>> G_LL(2 * p_c + 1, 0.);
     
-    double prefactor = pow(2 * M_PI * alpha / L, pow(1 - K, 2) / (2 * K)) / (Z * pow(L, 2));
+    double prefactor = pow(2 * M_PI * alpha / L, pow(1 - K, 2) / (2 * K)) / (Z);
     
     omp_set_num_threads(threads);
     #pragma omp parallel for
@@ -87,14 +87,14 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
         
         vector<complex<double>> G_R_L = K_L_summation(k, E_c, 1, 
                 -1, K, eta, omega, beta, &ES);
-        G_RL[l] = prefactor * (G_R_L[0] + G_R_L[1]);
+        G_RL[l] = 1i * prefactor * (G_R_L[0] + G_R_L[1]);
         /*
         cout << "k = " << k << ", G_R_L = " << G_R_L[0] << ", " << G_R_L[1] 
                 << G_R_L[2] << ", " << G_R_L[3] << "\n";
         */
         vector<complex<double>> G_L_R = K_L_summation(k, E_c, -1, 
                 1, K, eta, omega, beta, &ES);
-        G_LR[l] = prefactor * (G_L_R[0] + G_L_R[1]);
+        G_LR[l] = -1i * prefactor * (G_L_R[0] + G_L_R[1]);
         /*
         cout << "k = " << k << ", G_L_R = " << G_L_R[0] << ", " << G_L_R[1] 
                 << G_L_R[2] << ", " << G_L_R[3] << "\n";
@@ -153,7 +153,6 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
 }
 
 
-
 M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS_sector_2){
     /* Calculates matrix representation of f_r^B(k) between two total momentum sectors.*/
     int dim_sector_1 = HS_sector_1.size();
@@ -193,15 +192,15 @@ double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> bet
     // loop over all allowed values of alpha using auxilliary function
     vector<int> alpha = lower;
     double result = 0;
-    int p_c = int(dim / 2);
+    int p_c = int(dim / 2 + 0.1);
     
     while (alpha.size() > 0){
         // We need to perform sums of multi-indices element-wise
         vector<int> two_a_m_b1_m_b2(dim);
-        vector<int> a_m_b1(dim);
+        vector<int> a_m_b1(dim) ;
         vector<int> a_m_b2(dim);
         vector<int> b1_p_b2_m_a(dim);
-        for (int l= 0; l < dim; l++){ 
+    for (int l= 0; l < dim; l++){ 
             a_m_b1[l] = alpha[l] - beta_1[l];
             a_m_b2[l] = alpha[l] - beta_2[l];
             two_a_m_b1_m_b2[l] = a_m_b1[l] + a_m_b2[l];
@@ -217,7 +216,6 @@ double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> bet
         
         alpha = next_val(lower, upper, alpha);
     };    
-    
     return sqrt(factorial_mi(beta_1)) * sqrt(factorial_mi(beta_2)) * result;
 }
 
@@ -237,7 +235,6 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
         if (l_1 > 2 * E_c){
             break;
         }
-        
         // Get eigenstates and energies of both momentum and J sectors 
         Eigen::SelfAdjointEigenSolver<M> Eigen_J_1_l1 = ES -> energies_ES_sector_wise_J_1[l_1];
         Eigen::SelfAdjointEigenSolver<M> Eigen_J_1_l2 = ES -> energies_ES_sector_wise_J_1[l_2];
@@ -252,9 +249,9 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
         M f_r2 = f_B_r(r_2, K, HS_sector_l1, HS_sector_l2);               
         
         // do matrix multiplication to obtain all scalar products
-        M matrix_rep_f_r1 = Eigen_J_1_l1.eigenvectors() * (f_r1 * Eigen_J_1_l2.eigenvectors());
-        M matrix_rep_f_r2 = Eigen_J_1_l1.eigenvectors() * (f_r2 * Eigen_J_1_l2.eigenvectors());
-        
+        M matrix_rep_f_r1 = (Eigen_J_1_l1.eigenvectors().adjoint()) * (f_r1 * Eigen_J_1_l2.eigenvectors());
+        M matrix_rep_f_r2 = (Eigen_J_1_l1.eigenvectors().adjoint()) * (f_r2 * Eigen_J_1_l2.eigenvectors());
+   
         // carry out summation    
         int dim_sec_l1 = Eigen_J_1_l1.eigenvalues().size();
         int dim_sec_l2 = Eigen_J_1_l2.eigenvalues().size();
@@ -294,7 +291,7 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
                         * (exp(- beta * E_J_m1_j1) + exp(- beta * E_J_1_j2)) / (omega + E_J_m1_j1
                         - E_J_1_j2 + 1i * eta);
                 */
-                result_only_1 += matrix_rep_f_r1(j_1, j_2) * conj(matrix_rep_f_r2(j_1, j_2)) 
+            result_only_1 += matrix_rep_f_r1(j_1, j_2) * conj(matrix_rep_f_r2(j_1, j_2)) 
                         * (exp(- beta * E_J_1_j1) + exp(- beta * E_J_1_j2)) / (omega + E_J_1_j1
                         - E_J_1_j2 + 1i * eta);
                 /*
