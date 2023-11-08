@@ -13,7 +13,7 @@
 
 
 M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, 
-        double alpha, vector<vector<int>> HS_sector, int J){
+        double gamma, vector<vector<int>> HS_sector, int J){
     /* Calculates matrix representation of the total bosonic Luttinger Hamiltonian 
      * H0_B + J * H1_B on the subspace given by the Fock states / vectors of occupation 
      * numbers in HS_sector. */
@@ -23,7 +23,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
     M result = M::Zero(dim_sector,dim_sector);        
     
     complex<double> prefactor_H0 = v_F * M_PI / (L * K);    
-    complex<double> prefactor_H1 = pow(2 * M_PI * alpha/ L, K - 1) * 1i * a * U_m/ L;    
+    complex<double> prefactor_H1 = pow(2 * M_PI * gamma/ L, K - 1) * 1i * a * U_m/ L;    
     
     double norm_H0 = 0;
     double norm_H1 = 0;
@@ -32,13 +32,13 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
-        result(l_1, l_1) = prefactor_H0 * energy_H0_regularized(HS_sector[l_1]);
+        result(l_1, l_1) = prefactor_H0 * energy_H0_reg(L, HS_sector[l_1], gamma);
         norm_H0 += pow(abs(result(l_1, l_1)), 2); 
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
             vector<int> beta_1 = HS_sector[l_1];
             vector<int> beta_2 = HS_sector[l_2];
-            result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(K, beta_1, beta_2, L, a); 
+            result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(K, beta_1, beta_2, L, a, gamma); 
             result(l_2, l_1) = -result(l_1, l_2);
             norm_H1 += 2 * pow(abs(result(l_1, l_2)), 2);
             }
@@ -51,7 +51,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
         
         
 double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, double L, 
-        double a){
+        double a, double gamma){
     /* Calculate matrix element of H1_B between two Fock states beta_1, beta_2*/
     
     // we can check immediately if the matrix element vanishes
@@ -91,7 +91,7 @@ double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, dou
         }
 
         // calculate term in sum
-        result += power_sqrt_l_over_l_mi(two_a_m_b1_m_b2)  * (function_A(a_m_b1, factor, p_c) 
+        result += power_sqrt_l_over_l_mi_reg(L, two_a_m_b1_m_b2, gamma)  * (function_A(a_m_b1, factor, p_c) 
                 - function_A(a_m_b2, factor, p_c)) * 2 * pow(sqrt_K, abs_mi(a_m_b1) 
                 + abs_mi(a_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a));   

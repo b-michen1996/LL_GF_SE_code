@@ -78,7 +78,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
         int k = l - p_c;
         
         vector<complex<double>> G_R_R = K_L_summation(k, E_c, 1, 
-                1, K, eta, omega, beta, &ES);
+                1, K, L, alpha, eta, omega, beta, &ES);
         G_RR[l] = prefactor * (G_R_R[0] + G_R_R[1]);
         /*
         cout << "k = " << k << ", G_R_R = " << prefactor * G_R_R[0] << ", " << prefactor * G_R_R[1] 
@@ -86,21 +86,21 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
         */
         
         vector<complex<double>> G_R_L = K_L_summation(k, E_c, 1, 
-                -1, K, eta, omega, beta, &ES);
+                -1, K, L, alpha, eta, omega, beta, &ES);
         G_RL[l] = 1i * prefactor * (G_R_L[0] + G_R_L[1]);
         /*
         cout << "k = " << k << ", G_R_L = " << G_R_L[0] << ", " << G_R_L[1] 
                 << G_R_L[2] << ", " << G_R_L[3] << "\n";
         */
         vector<complex<double>> G_L_R = K_L_summation(k, E_c, -1, 
-                1, K, eta, omega, beta, &ES);
+                1, K, L, alpha, eta, omega, beta, &ES);
         G_LR[l] = -1i * prefactor * (G_L_R[0] + G_L_R[1]);
         /*
         cout << "k = " << k << ", G_L_R = " << G_L_R[0] << ", " << G_L_R[1] 
                 << G_L_R[2] << ", " << G_L_R[3] << "\n";
         */
         vector<complex<double>> G_L_L = K_L_summation(k, E_c, -1, 
-                -1, K, eta, omega, beta, &ES);
+                -1, K, L, alpha, eta, omega, beta, &ES);
         G_LL[l] = prefactor * (G_L_L[0] + G_L_L[1]);
         /*
         cout << "k = " << k << ", G_L_L = " << G_L_L[0] << ", " << G_L_L[1] 
@@ -153,7 +153,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
 }
 
 
-M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS_sector_2){
+M f_B_r(int r, double K, double L, double gamma, vector<vector<int>> HS_sector_1, vector<vector<int>> HS_sector_2){
     /* Calculates matrix representation of f_r^B(k) between two total momentum sectors.*/
     int dim_sector_1 = HS_sector_1.size();
     int dim_sector_2 = HS_sector_2.size();
@@ -166,7 +166,7 @@ M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS
             vector<int> beta_1 = HS_sector_1[l_1];
             vector<int> beta_2 = HS_sector_2[l_2];
             
-            result(l_1, l_2) = f_B_r_matrix_element(r, K, beta_1, beta_2);
+            result(l_1, l_2) = f_B_r_matrix_element(r, K, L, gamma, beta_1, beta_2);
             
             /*
             complex<double> test = result(l_1, l_2);
@@ -189,7 +189,7 @@ M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS
 };
 
 
-double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> beta_2){
+double f_B_r_matrix_element(int r, double K, double L, double gamma, vector<int> beta_1, vector<int> beta_2){
     /* Calculates the matrix element of the bosonic factor f_B_r(k) (the dependence 
      * on the external momentum k is only in the total momentum sectors between 
      * which we evaluate f_B_r(k)).*/
@@ -227,7 +227,7 @@ double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> bet
             sign = -1.;
         }
         // calculate term in sum
-        result += sign * (power_l_over_sqrt_Kl_mi(r, K, two_a_m_b1_m_b2)) / (factorial_mi(a_m_b1) 
+        result += sign * (power_l_over_sqrt_Kl_mi_reg(r, K, L, gamma, two_a_m_b1_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a)); 
         
         alpha = next_val(lower, upper, alpha);
@@ -236,7 +236,8 @@ double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> bet
 }
 
 
-vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K, double eta, 
+vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K, 
+        double L, double gamma, double eta, 
         double omega, double beta, eigenstates_J_pm* ES){
     /* Summation appearing in K-L-representation for G(r_1, r_2, k)*/
     complex<double> result_J_1 = 0.;
@@ -261,8 +262,8 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
         vector<vector<int>> HS_sector_l1 = ES -> HS_truncated.HS_tot[l_1];
         vector<vector<int>> HS_sector_l2 = ES -> HS_truncated.HS_tot[l_2];        
                 
-        M f_r1 = f_B_r(r_1, K, HS_sector_l1, HS_sector_l2);
-        M f_r2 = f_B_r(r_2, K, HS_sector_l1, HS_sector_l2);               
+        M f_r1 = f_B_r(r_1, K, L, gamma, HS_sector_l1, HS_sector_l2);
+        M f_r2 = f_B_r(r_2, K, L, gamma, HS_sector_l1, HS_sector_l2);               
         
         /*
         cout << "l_1 = " << l_1 << ", l_2 = " << l_2 << ", norm f_B_R_curr_Fock_base = " 

@@ -12,7 +12,7 @@
 
 #include "Export_f_B_only.h"
 
-void export_f_B(double v_F, double K, double U_m, double L, double a, double alpha, 
+void export_f_B(double v_F, double K, double U_m, double L, double a, double gamma, 
         int E_c, int p_c, int runNr, int threads){
     /* Calculate only the matrix elements of the bosonic factors f_B_r and 
      * export them together with the energies.*/
@@ -22,14 +22,14 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double alp
     filesystem::create_directories(output_folder);
     ofstream parameters(output_folder + "/parameters.csv");    
     
-    parameters << "v_F " << v_F << "\n" << "K " << K << "\n" << "alpha " << alpha << "\n" 
+    parameters << "v_F " << v_F << "\n" << "K " << K << "\n" << "gamma " << gamma << "\n" 
             << "U_m " << U_m << "\n" << "L " << L << "\n" 
             << "a " << a << "\n" << "E_c " << E_c << "\n" << "p_c " << p_c << "\n"  
             << "runNr " << runNr << "\n" << "threads " << threads;
     parameters.close();
     
     // Calculate eigenstates
-    eigenstates_J_pm ES(v_F, K, U_m, L, a, alpha, E_c, p_c, threads);
+    eigenstates_J_pm ES(v_F, K, U_m, L, a, gamma, E_c, p_c, threads);
     
     // export energies
     string energy_folder = output_folder + "/energies";
@@ -89,8 +89,8 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double alp
             vector<vector<int>> HS_sector_l1 = ES.HS_truncated.HS_tot[l_1];
             vector<vector<int>> HS_sector_l2 = ES.HS_truncated.HS_tot[l_2];        
                 
-            M f_B_R_curr_Fock_base = f_B_r(1, K, HS_sector_l1, HS_sector_l2);
-            M f_B_L_curr_Fock_base = f_B_r(-1, K, HS_sector_l1, HS_sector_l2);  
+            M f_B_R_curr_Fock_base = f_B_r(1, K, L, gamma, HS_sector_l1, HS_sector_l2);
+            M f_B_L_curr_Fock_base = f_B_r(-1, K, L, gamma, HS_sector_l1, HS_sector_l2);  
             
             // do matrix multiplication to obtain all scalar products
             M f_B_R_curr_ES_base = (Eigen_J_1_l1.eigenvectors().adjoint()) 

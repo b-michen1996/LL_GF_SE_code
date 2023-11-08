@@ -80,6 +80,20 @@ double energy_H0(vector<int> alpha){
     return result;
 }
 
+
+double energy_H0_reg(double L, vector<int> alpha, double gamma){
+    /* Energy of free Hamiltonian of a multi-index Fock state (up to prefactor).*/
+    int result = 0;
+    int p_c = int (alpha.size()/2 + 0.1);
+    
+    double prefactor = gamma * 2 * M_PI / L;
+    
+    for (int l = 0; l < 2 * p_c; l++){
+        result += exp(-prefactor * abs(momentum(l, p_c))) * abs(momentum(l, p_c)) * alpha[l];
+    }
+    return result;
+}
+
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val){
     /* return next value of multi-index val with bounds given by lower and 
      * upper. */
@@ -155,6 +169,25 @@ double power_sqrt_l_over_l_mi(vector<int> alpha){
 }
 
 
+double power_sqrt_l_over_l_mi_reg(double L, vector<int> alpha, double gamma){
+    /* Expression (\frac{\sqrt{l}}{l})^\alpha that appears in matrix element 
+     * of H1_B*/
+    double result = 1;
+    double prefactor = gamma * M_PI / L;
+    
+    int p_c = int(alpha.size() / 2);
+    
+    for (int l = 0; l < 2 * p_c; l++){
+        // momentum of current index
+        int p_l =  momentum(l, p_c);        
+        
+        result = result * pow(exp(-prefactor * abs(momentum(l, p_c))) 
+                * sqrt(abs(p_l))/p_l ,  alpha[l]);        
+    }
+    return result;
+}
+
+
 double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
     /* Expression that appears in matrix element 
      * of f_r^B(k)*/
@@ -170,6 +203,31 @@ double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
         }
         if (alpha[l] > 0){
         result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);
+        };
+        
+    }
+    return result;
+}
+
+
+double power_l_over_sqrt_Kl_mi_reg(int r, double K, double L, double gamma, vector<int> alpha){
+    /* Expression that appears in matrix element 
+     * of f_r^B(k)*/
+    double result = 1;
+    double prefactor = gamma * M_PI / L;
+    
+    int p_c = int(alpha.size() / 2 + 0.1);
+    
+    for (int l = 0; l < 2 * p_c; l++ ){
+        // momentum of current index
+        int p_l =  momentum(l, p_c);        
+        int sign = 1.;
+        if (p_l < 0){
+            sign = -1.;
+        }
+        if (alpha[l] > 0){
+        result = result * pow(exp(-prefactor * abs(momentum(l, p_c))) 
+                * (1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);
         };
         
     }

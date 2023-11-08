@@ -22,9 +22,9 @@ using namespace std;
 typedef Eigen::MatrixXcd M;
 
 
-M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alpha, vector<vector<int>> HS_sector, int J);
+M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double gamma, vector<vector<int>> HS_sector, int J);
 
-double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, double L, double a);
+double H1_B_matrix_element(double K, vector<int> beta_1, vector<int> beta_2, double L, double a, double gamma);
 
 struct eigenstates_J_pm{
     /* Struct that contains eigenstates of bosonic Hamiltonian H0_B + J * H1_B

@@ -1,6 +1,6 @@
 v_F 0.5
 K 1
-alpha 0.01
+gamma 3
 U_m 0
 L 100
 a 1

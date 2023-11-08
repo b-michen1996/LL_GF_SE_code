@@ -31,7 +31,7 @@ def plot_spectrum(parameters, omega, beta, eta):
     
     
     
-    title = (r"$v_F$ = " + str(v_F) +  r", K = " + str(K) +  r", $U_m$ = " + str(U_m) + r", $\alpha$ = " + str(alpha)
+    title = (r"$v_F$ = " + str(v_F) +  r", K = " + str(K) +  r", $U_m$ = " + str(U_m) + r", $\gamma$ = " + str(alpha)
     + r", L = " + str(L)) + r", $E_c$ = " + str(E_c) + r", $p_c$ =" + str(p_c) 
     # plot
     fig = plt.figure()
@@ -310,12 +310,9 @@ def main():
     
     omega= 0.
     beta = [1, 5, 10, 20]
-    beta = [20, 50, 100]
-    beta = [0.1, 1, 2, 5, 10, 20]
-    beta = [30,40,50]
-    eta = [0.5, 0.25, 0.1, 0.05, 0.025]
-    beta = [1]
-    eta = [0.1]
+    beta = [10]
+    eta = [0.05]
+
     
     
     plot_spectrum(parameters, omega, beta, eta)

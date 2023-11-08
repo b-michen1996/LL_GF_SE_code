@@ -14,7 +14,7 @@
 
 #include "GF_SE.h"
 
-void export_f_B(double v_F, double K, double U_m, double L, double a, double alpha, 
+void export_f_B(double v_F, double K, double U_m, double L, double a, double gamma, 
         int E_c, int p_c, int runNr, int threads);
 
 void write_f_B_to_file(M f_B_R_curr_ES_base, string filename);

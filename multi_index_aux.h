@@ -29,6 +29,8 @@ int abs_mi(vector<int> alpha);
 
 double energy_H0(vector<int> alpha);
 
+double energy_H0_reg(double L, vector<int> alpha, double gamma);
+
 vector<int> next_val(vector<int> lower, vector<int> upper, vector<int> val);
 
 vector<int> next_val_Ec(vector<int> val, int E_c);
@@ -37,4 +39,8 @@ double function_A(vector<int> alpha, double factor, int p_c);
 
 double power_sqrt_l_over_l_mi(vector<int> alpha);
 
+double power_sqrt_l_over_l_mi_reg(double L, vector<int> alpha, double gamma);
+
 double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha);
+
+double power_l_over_sqrt_Kl_mi_reg(int r, double K, double L, double gamma, vector<int> alpha);
