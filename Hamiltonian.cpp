@@ -12,7 +12,8 @@
 #include <omp.h>
 
 
-M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alpha, vector<vector<int>> HS_sector, int J){
+M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, 
+        double alpha, vector<vector<int>> HS_sector, int J){
     /* Calculates matrix representation of the total bosonic Luttinger Hamiltonian 
      * H0_B + J * H1_B on the subspace given by the Fock states / vectors of occupation 
      * numbers in HS_sector. */
@@ -21,7 +22,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alp
     // initialize matrix to store results
     M result = M::Zero(dim_sector,dim_sector);        
     
-    complex<double> prefactor_H0 = v_F * 2 * M_PI / (L * K);    
+    complex<double> prefactor_H0 = v_F * M_PI / (L * K);    
     complex<double> prefactor_H1 = pow(2 * M_PI * alpha/ L, K - 1) * 1i * a * U_m/ L;    
     
     double norm_H0 = 0;
@@ -31,7 +32,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a, double alp
     #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
-        result(l_1, l_1) = prefactor_H0 * energy_H0(HS_sector[l_1]);
+        result(l_1, l_1) = prefactor_H0 * energy_H0_regularized(HS_sector[l_1]);
         norm_H0 += pow(abs(result(l_1, l_1)), 2); 
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
@@ -122,6 +123,7 @@ eigenstates_J_pm::eigenstates_J_pm(double in_v_F, double in_K, double in_U_m, do
         // Get matrix representation of bosonic Hamiltonian
         M H_Luttinger_J_1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, 1);
         M H_Luttinger_J_m1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, -1);
+        
         
         cout << "total momentum sector " << l - E_c << ", norm of Hamiltonian "
                 << H_Luttinger_J_1_block.norm() << "\n";

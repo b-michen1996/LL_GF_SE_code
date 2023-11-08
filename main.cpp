@@ -32,23 +32,23 @@ typedef Eigen::MatrixXcd M;
  */
 int main(int argc, char** argv){   
     // some parameters
-    double v_F = 1;
+    double v_F = 0.5;
     double K = 0.75;
-    double L = 100;
+    double L = 1000;
     double a = 1;        
-    double U_m = 0;
-    int E_c = 6;
+    double U_m = 0.75;
+    int E_c = 12;
     
-    double alpha = 0.01;
+    double alpha = 0.0000001;
     double eta = 0.01;
     
     double omega = 0.00;
     double beta = 1000000;
     
-    int runNr = 8;
+    int runNr = 5;
     int threads = 15;
     
-    int p_c = 6;
+    int p_c = 8;
     
     /*
     GF_SE_J_explicit(v_F, K, U_m, L, a, alpha, eta, E_c, p_c, omega, 
@@ -57,6 +57,13 @@ int main(int argc, char** argv){
     
     export_f_B(v_F, K, U_m, L, a, alpha, E_c, p_c,
             runNr, threads);
+    
+    vector<int> beta_1 = {0,1,1,0};
+    vector<int> beta_2 = {0,1,3,0};
+    
+    double test = f_B_r_matrix_element(1, 1, beta_1, beta_2);
+    
+    //cout << test;
     
     return 0;
 }

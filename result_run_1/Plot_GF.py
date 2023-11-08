@@ -38,7 +38,7 @@ def plot_spectrum(G_RR, G_RL, G_LR, G_LL, parameters):
     a1.plot(k_vals, energies_re[:,1], 'b-')
     a1.plot(k_vals, energies_im[:,1],'b--')  
     a1.set_xlim([-np.pi, np.pi])
-    #a1.set_ylim([-2.5, 2.5])
+    a1.set_ylim([np.min(energies_re), np.max(energies_re)])
     a1.tick_params(direction='out', length=6, width=2,  labelsize = 'large')
     a1.legend(loc='upper center', prop={'size': 12})
     # change color of legend to black

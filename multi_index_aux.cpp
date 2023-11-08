@@ -164,11 +164,14 @@ double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
     for (int l = 0; l < 2 * p_c; l++ ){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
-        int sign = 1;
+        int sign = 1.;
         if (p_l < 0){
-            sign = -1;
+            sign = -1.;
         }
-        result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);        
+        if (alpha[l] > 0){
+        result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);
+        };
+        
     }
     return result;
 }

@@ -166,7 +166,23 @@ M f_B_r(int r, double K, vector<vector<int>> HS_sector_1, vector<vector<int>> HS
             vector<int> beta_1 = HS_sector_1[l_1];
             vector<int> beta_2 = HS_sector_2[l_2];
             
-            result(l_1, l_2) = f_B_r_matrix_element(r, K, beta_1, beta_2); 
+            result(l_1, l_2) = f_B_r_matrix_element(r, K, beta_1, beta_2);
+            
+            /*
+            complex<double> test = result(l_1, l_2);
+            if (abs(test) == 0){
+                cout << "f_B_r(beta_1, beta_2) = 0 for r = " << r << ", beta1 = (";
+                for (int c : beta_1){
+                    cout << c << ",  ";
+                }
+                
+                cout << "), beta2 = (";
+                for (int c : beta_2){
+                    cout << c << ",  ";
+                }
+                cout << ")\n";
+            }*/
+             
             }
         }
     return result;
@@ -206,12 +222,12 @@ double f_B_r_matrix_element(int r, double K, vector<int> beta_1, vector<int> bet
             two_a_m_b1_m_b2[l] = a_m_b1[l] + a_m_b2[l];
             b1_p_b2_m_a[l] = beta_1[l] + beta_2[l] - alpha[l];
         }
-        int sign = 1;
+        int sign = 1.;
         if (abs_mi(a_m_b2) % 2 == 1){
-            sign = -1;
+            sign = -1.;
         }
         // calculate term in sum
-        result += sign * power_l_over_sqrt_Kl_mi(r, K, two_a_m_b1_m_b2) / (factorial_mi(a_m_b1) 
+        result += sign * (power_l_over_sqrt_Kl_mi(r, K, two_a_m_b1_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a)); 
         
         alpha = next_val(lower, upper, alpha);
@@ -247,6 +263,12 @@ vector<complex<double>> K_L_summation(int k, int E_c, int r_1, int r_2, double K
                 
         M f_r1 = f_B_r(r_1, K, HS_sector_l1, HS_sector_l2);
         M f_r2 = f_B_r(r_2, K, HS_sector_l1, HS_sector_l2);               
+        
+        /*
+        cout << "l_1 = " << l_1 << ", l_2 = " << l_2 << ", norm f_B_R_curr_Fock_base = " 
+                    << f_r1.norm() << ", norm f_B_L_curr_Fock_base = " 
+                    << f_r2.norm() << "\n";
+        */
         
         // do matrix multiplication to obtain all scalar products
         M matrix_rep_f_r1 = (Eigen_J_1_l1.eigenvectors().adjoint()) * (f_r1 * Eigen_J_1_l2.eigenvectors());

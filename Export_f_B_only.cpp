@@ -94,9 +94,9 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double alp
             
             // do matrix multiplication to obtain all scalar products
             M f_B_R_curr_ES_base = (Eigen_J_1_l1.eigenvectors().adjoint()) 
-                    * (f_B_R_curr_Fock_base * Eigen_J_1_l2.eigenvectors());
+                    * (f_B_R_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
             M f_B_L_curr_ES_base = (Eigen_J_1_l1.eigenvectors().adjoint()) 
-                    * (f_B_L_curr_Fock_base * Eigen_J_1_l2.eigenvectors());
+                    * (f_B_L_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
             
             // write to file
             string filename_f_B_R= output_folder_f_B_R_curr + "/f_B_R_" + to_string(l_1) 
@@ -104,9 +104,22 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double alp
             string filename_f_B_L = output_folder_f_B_L_curr + "/f_B_L_" + to_string(l_1) 
             + "_" + to_string(l_2) + ".csv";
             
-            cout << "l_1 = " << l_1 << ", l_2 = " << l_2 << ", norm f_B_R_curr_Fock_base = " 
+            /*
+            cout << "l_1 = " << l_1 << ", l_2 = " << l_2 << ", k = " << k << ", norm f_B_R_curr_Fock_base = " 
                     << f_B_R_curr_Fock_base.norm() << ", norm f_B_L_curr_Fock_base = " 
                     << f_B_L_curr_Fock_base.norm() << "\n";
+            
+            if (f_B_R_curr_Fock_base.norm() == 0){
+                cout << "l_1 = " << l_1 - E_c<< ", l_2 = " << l_2 - E_c<< ", k = " << k 
+                        << ", norm f_B_R_curr_Fock_base = 0 \n"; //, matrix rep is" << "\n";
+                //cout << f_B_R_curr_Fock_base << "\n";
+            }
+            
+            if (f_B_L_curr_Fock_base.norm() == 0){
+                cout << "l_1 = " << l_1 - E_c << ", l_2 = " << l_2 - E_c<< ", k = " << k 
+                        << ", norm f_B_L_curr_Fock_base = 0 \n";
+            }
+            */
             
             write_f_B_to_file(f_B_R_curr_ES_base, filename_f_B_R);
             write_f_B_to_file(f_B_L_curr_ES_base, filename_f_B_L);
