@@ -44,8 +44,7 @@ HS_Ec_pc::HS_Ec_pc(int in_Ec, int in_pc):E_c(in_Ec), p_c(in_pc){
         HS_tot[l_p_tot].insert(HS_tot[l_p_tot].end(), state);
         
         state = next_val_Ec(state, E_c);
-    }
-            
+    }       
 };
 
 

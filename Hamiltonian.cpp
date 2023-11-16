@@ -20,7 +20,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
     int dim_sector = HS_sector.size();
     
     // initialize matrix to store results
-    M result = M::Zero(dim_sector,dim_sector);        
+    M result = M::Zero(dim_sector, dim_sector);        
     
     complex<double> prefactor_H0 = v_F * M_PI / (L * K);    
     complex<double> prefactor_H1 = pow(2 * M_PI * gamma/ L, K - 1) * 1i * a * U_m/ L;    
@@ -28,15 +28,14 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
     double norm_H0 = 0;
     double norm_H1 = 0;
     
-    //omp_set_num_threads(14);
-    #pragma omp parallel for
     for (int l_1 = 0; l_1 < dim_sector; l_1++){
         // set diagonal entry
-        result(l_1, l_1) = prefactor_H0 * energy_H0_reg(L, HS_sector[l_1], gamma);
+        vector<int> beta_1 = HS_sector[l_1];
+        result(l_1, l_1) = prefactor_H0 * energy_H0_reg(L, beta_1, gamma);
+        //result(l_1, l_1) = prefactor_H0 * energy_H0(beta_1);
         norm_H0 += pow(abs(result(l_1, l_1)), 2); 
         // set off-diagonal entries
         for (int l_2 = l_1 + 1; l_2 < dim_sector; l_2++){
-            vector<int> beta_1 = HS_sector[l_1];
             vector<int> beta_2 = HS_sector[l_2];
             result(l_1, l_2) = double(J) * prefactor_H1 * H1_B_matrix_element(K, beta_1, beta_2, L, a, gamma); 
             result(l_2, l_1) = -result(l_1, l_2);
@@ -44,7 +43,7 @@ M H_Luttinger_J(double v_F, double K, double U_m, double L, double a,
             }
         }
     
-    cout << "norm H0 = " << sqrt(norm_H0) << ", norm H1 = " << sqrt(norm_H1) << "\n";
+    //cout << "norm H0 = " << sqrt(norm_H0) << ", norm H1 = " << sqrt(norm_H1) << "\n";
     
     return result;
 };
@@ -124,16 +123,15 @@ eigenstates_J_pm::eigenstates_J_pm(double in_v_F, double in_K, double in_U_m, do
         M H_Luttinger_J_1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, 1);
         M H_Luttinger_J_m1_block = H_Luttinger_J(v_F, K, U_m, L, a, alpha, HS_sector, -1);
         
-        
+        /*
         cout << "total momentum sector " << l - E_c << ", norm of Hamiltonian "
                 << H_Luttinger_J_1_block.norm() << "\n";
-        
+        */
         // Calculate eigenstates and insert into global vector
         Eigen::SelfAdjointEigenSolver<M> temp_J1(H_Luttinger_J_1_block);    
         Eigen::SelfAdjointEigenSolver<M> temp_Jm1(H_Luttinger_J_m1_block);
 
         energies_ES_sector_wise_J_1[l] = temp_J1;
         energies_ES_sector_wise_J_m1[l]= temp_Jm1;
-    }   
-    
+    }     
 }

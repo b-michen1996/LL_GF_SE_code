@@ -3,10 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/cppFiles/file.cc to edit this template
  */
 
+#include <iostream>
+#include <cmath>
+
 
 #include "multi_index_aux.h"
-
-#include <cmath>
 
 int momentum(int l, int p_c){
     /* Returns (integer) momentum for given index l of a mutli-index
@@ -71,7 +72,7 @@ int abs_mi(vector<int> alpha){
 
 double energy_H0(vector<int> alpha){
     /* Energy of free Hamiltonian of a multi-index Fock state (up to prefactor).*/
-    int result = 0;
+    double result = 0;
     int p_c = int (alpha.size()/2 + 0.1);
     
     for (int l = 0; l < 2 * p_c; l++){
@@ -83,13 +84,14 @@ double energy_H0(vector<int> alpha){
 
 double energy_H0_reg(double L, vector<int> alpha, double gamma){
     /* Energy of free Hamiltonian of a multi-index Fock state (up to prefactor).*/
-    int result = 0;
+    double result = 0.;
     int p_c = int (alpha.size()/2 + 0.1);
     
     double prefactor = gamma * 2 * M_PI / L;
     
     for (int l = 0; l < 2 * p_c; l++){
-        result += exp(-prefactor * abs(momentum(l, p_c))) * abs(momentum(l, p_c)) * alpha[l];
+        result += exp(-prefactor * abs(momentum(l, p_c)))
+        * abs(momentum(l, p_c)) * alpha[l];
     }
     return result;
 }

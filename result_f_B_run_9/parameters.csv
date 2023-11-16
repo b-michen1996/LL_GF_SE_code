@@ -1,0 +1,10 @@
+v_F 0.5
+K 0.6
+gamma 0.1
+U_m 0
+L 100
+a 1
+E_c 8
+p_c 8
+runNr 9
+threads 15

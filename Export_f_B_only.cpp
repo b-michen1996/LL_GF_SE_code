@@ -55,12 +55,8 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double gam
         energies_J_1.close();
         energies_J_m1.close();
     }
-    
-    
-    
+      
     // export f_B  
-    vector<vector<int>> HS_sector_l1 = ES.HS_truncated.HS_tot[4];
-    vector<vector<int>> HS_sector_l2 = ES.HS_truncated.HS_tot[3];  
         
     omp_set_num_threads(threads);
     #pragma omp parallel for
@@ -120,12 +116,135 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double gam
                         << ", norm f_B_L_curr_Fock_base = 0 \n";
             }
             */
-            
+
             write_f_B_to_file(f_B_R_curr_ES_base, filename_f_B_R);
             write_f_B_to_file(f_B_L_curr_ES_base, filename_f_B_L);
         }
     }
 }
+
+
+void export_f_B_Klein_explicit(double v_F, double K, double U_m, double L, double a, double gamma, 
+        int E_c, int p_c, int runNr, int threads){
+    /* Calculate only the matrix elements of the bosonic factors f_B_r and 
+     * export them together with the energies. Klein sectors are accounted for.*/
+    
+    // Create folder and save parameters
+    string output_folder = "result_f_B_Klein_exp_run_" + to_string(runNr);
+    filesystem::create_directories(output_folder);
+    ofstream parameters(output_folder + "/parameters.csv");    
+    
+    parameters << "v_F " << v_F << "\n" << "K " << K << "\n" << "gamma " << gamma << "\n" 
+            << "U_m " << U_m << "\n" << "L " << L << "\n" 
+            << "a " << a << "\n" << "E_c " << E_c << "\n" << "p_c " << p_c << "\n"  
+            << "runNr " << runNr << "\n" << "threads " << threads;
+    parameters.close();
+    
+    // Calculate eigenstates
+    eigenstates_J_pm ES(v_F, K, U_m, L, a, gamma, E_c, p_c, threads);
+    
+    // export energies
+    string energy_folder = output_folder + "/energies";
+    filesystem::create_directories(energy_folder);
+
+    for (int l = 0; l < 2 * E_c + 1; l++){        
+        // get dimension of current momentum sector
+        int dim_sector = ES.HS_truncated.HS_tot[l].size();
+        // get current sector
+        Eigen::SelfAdjointEigenSolver<M> solver_curr_J_1 = ES.energies_ES_sector_wise_J_1[l]; 
+        Eigen::SelfAdjointEigenSolver<M> solver_curr_J_m1 = ES.energies_ES_sector_wise_J_m1[l]; 
+        
+        // create files 
+        ofstream energies_J_1(energy_folder + "/energies_J_1_" + to_string(l) + ".csv"); 
+        ofstream energies_J_m1(energy_folder + "/energies_J_m1_" + to_string(l) + ".csv"); 
+        
+        for (int j = 0; j < dim_sector; j++){
+            double E_J_1_j = solver_curr_J_1.eigenvalues()(j);
+            double E_J_m1_j = solver_curr_J_m1.eigenvalues()(j);           
+            energies_J_1 << E_J_1_j << "\n";
+            energies_J_m1 << E_J_m1_j << "\n";
+        } 
+        energies_J_1.close();
+        energies_J_m1.close();
+    }
+     
+    omp_set_num_threads(threads);
+    #pragma omp parallel for
+    for (int l = 0; l < 2 * p_c + 1; l++ ){
+        int k = l - p_c;
+        
+        // create subfolder to store f_B(k)
+        string output_folder_f_B_R_curr = output_folder + "/f_B_R_" + to_string(l);
+        string output_folder_f_B_L_curr = output_folder + "/f_B_L_" + to_string(l);
+        filesystem::create_directories(output_folder_f_B_R_curr);
+        filesystem::create_directories(output_folder_f_B_L_curr);
+        
+        
+        for (int l_2 = max(0, k); l_2 < 2 * E_c + 1; l_2 ++){
+            int l_1 = l_2 - k;
+            if (l_1 > 2 * E_c){
+                break;
+            }
+            // Get eigenstates and energies of both momentum and J sectors 
+            Eigen::SelfAdjointEigenSolver<M> Eigen_J_1_l1 = ES.energies_ES_sector_wise_J_1[l_1];
+            Eigen::SelfAdjointEigenSolver<M> Eigen_J_1_l2 = ES.energies_ES_sector_wise_J_1[l_2];
+            Eigen::SelfAdjointEigenSolver<M> Eigen_J_m1_l1 = ES.energies_ES_sector_wise_J_m1[l_1];
+            Eigen::SelfAdjointEigenSolver<M> Eigen_J_m1_l2 = ES.energies_ES_sector_wise_J_m1[l_2];
+
+            // get matrix rep of f_B_r(k) in fock basis
+            vector<vector<int>> HS_sector_l1 = ES.HS_truncated.HS_tot[l_1];
+            vector<vector<int>> HS_sector_l2 = ES.HS_truncated.HS_tot[l_2];        
+                
+            M f_B_R_curr_Fock_base = f_B_r(1, K, L, gamma, HS_sector_l1, HS_sector_l2);
+            M f_B_L_curr_Fock_base = f_B_r(-1, K, L, gamma, HS_sector_l1, HS_sector_l2);  
+            
+            // do matrix multiplication to obtain all scalar products
+            M f_B_R_curr_ES_base_t1 = (Eigen_J_1_l1.eigenvectors().adjoint()) 
+                    * (f_B_R_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
+            M f_B_L_curr_ES_base_t1 = (Eigen_J_1_l1.eigenvectors().adjoint()) 
+                    * (f_B_L_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
+            
+            M f_B_R_curr_ES_base_t2 = (Eigen_J_m1_l1.eigenvectors().adjoint()) 
+                    * (f_B_R_curr_Fock_base * Eigen_J_1_l2.eigenvectors());
+            M f_B_L_curr_ES_base_t2 = (Eigen_J_m1_l1.eigenvectors().adjoint()) 
+                    * (f_B_L_curr_Fock_base * Eigen_J_1_l2.eigenvectors());
+            
+            // write to file
+            string filename_f_B_R_t1= output_folder_f_B_R_curr + "/f_B_R_t1_" + to_string(l_1) 
+            + "_" + to_string(l_2) + ".csv"; 
+            string filename_f_B_L_t1 = output_folder_f_B_L_curr + "/f_B_L_t1_" + to_string(l_1) 
+            + "_" + to_string(l_2) + ".csv";
+            
+            string filename_f_B_R_t2= output_folder_f_B_R_curr + "/f_B_R_t2_" + to_string(l_1) 
+            + "_" + to_string(l_2) + ".csv"; 
+            string filename_f_B_L_t2 = output_folder_f_B_L_curr + "/f_B_L_t2_" + to_string(l_1) 
+            + "_" + to_string(l_2) + ".csv";
+            
+            /*
+            cout << "l_1 = " << l_1 << ", l_2 = " << l_2 << ", k = " << k << ", norm f_B_R_curr_Fock_base = " 
+                    << f_B_R_curr_Fock_base.norm() << ", norm f_B_L_curr_Fock_base = " 
+                    << f_B_L_curr_Fock_base.norm() << "\n";
+            
+            if (f_B_R_curr_Fock_base.norm() == 0){
+                cout << "l_1 = " << l_1 - E_c<< ", l_2 = " << l_2 - E_c<< ", k = " << k 
+                        << ", norm f_B_R_curr_Fock_base = 0 \n"; //, matrix rep is" << "\n";
+                //cout << f_B_R_curr_Fock_base << "\n";
+            }
+            
+            if (f_B_L_curr_Fock_base.norm() == 0){
+                cout << "l_1 = " << l_1 - E_c << ", l_2 = " << l_2 - E_c<< ", k = " << k 
+                        << ", norm f_B_L_curr_Fock_base = 0 \n";
+            }
+            */
+                        
+            write_f_B_to_file(f_B_R_curr_ES_base_t1, filename_f_B_R_t1);
+            write_f_B_to_file(f_B_L_curr_ES_base_t1, filename_f_B_L_t1);
+            write_f_B_to_file(f_B_R_curr_ES_base_t2, filename_f_B_R_t2);
+            write_f_B_to_file(f_B_L_curr_ES_base_t2, filename_f_B_L_t2);
+        }
+    }
+}
+
 
 
 void write_f_B_to_file(M f, string filename){

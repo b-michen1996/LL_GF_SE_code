@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Export_f_B_only.o \
 	${OBJECTDIR}/GF_SE.o \
 	${OBJECTDIR}/Hamiltonian.o \
+	${OBJECTDIR}/export_b_q_only.o \
 	${OBJECTDIR}/hilbert_space.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/multi_index_aux.o
@@ -81,6 +82,11 @@ ${OBJECTDIR}/Hamiltonian.o: Hamiltonian.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Hamiltonian.o Hamiltonian.cpp
+
+${OBJECTDIR}/export_b_q_only.o: export_b_q_only.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/export_b_q_only.o export_b_q_only.cpp
 
 ${OBJECTDIR}/hilbert_space.o: hilbert_space.cpp
 	${MKDIR} -p ${OBJECTDIR}

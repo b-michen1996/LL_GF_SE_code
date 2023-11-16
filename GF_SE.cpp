@@ -51,8 +51,7 @@ void GF_SE_J_explicit(double v_F, double K, double U_m, double L, double a, doub
             // cout << E_J_1_j << ", " << E_J_m1_j << "\n";
             Z_sector_J_1 += exp(- beta * E_J_1_j);
             Z_sector_J_m1 += exp(- beta * E_J_m1_j);
-            
-                    
+                                
             energies << l - E_c << " " << E_J_1_j << "\n";
         }
         /*

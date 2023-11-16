@@ -22,6 +22,7 @@
 #include "multi_index_aux.h"
 #include "GF_SE.h"
 #include "Export_f_B_only.h"
+#include "export_b_q_only.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -36,10 +37,10 @@ int main(int argc, char** argv){
     double K = 1;
     double L = 100;
     double a = 1;        
-    double U_m = 0.;
+    double U_m = 0;
     int E_c = 12;
     
-    double gamma = 0.1;
+    double gamma = 0.001;
     double eta = 0.01;
     
     double omega = 0.00;
@@ -48,161 +49,108 @@ int main(int argc, char** argv){
     int runNr = 2;
     int threads = 15;
     
-    int p_c = 8;
+    int p_c = 12;
     
     /*
     GF_SE_J_explicit(v_F, K, U_m, L, a, gamma, eta, E_c, p_c, omega, 
             beta, runNr, threads);
     */
     
+    /*
     export_f_B(v_F, K, U_m, L, a, gamma, E_c, p_c,
             runNr, threads);
+    */
+    /*
+    export_f_B_Klein_explicit(v_F, K, U_m, L, a, gamma, E_c, p_c,
+            runNr, threads);
+    */
+  
     
-    vector<int> beta_1 = {0,1,1,0};
-    vector<int> beta_2 = {0,1,3,0};
+    export_b_q_only(v_F, K, U_m, L, a, gamma, E_c, p_c,
+            runNr, threads);
     
-    double test = f_B_r_matrix_element(1, 1, L, gamma, beta_1, beta_2);
+    /*
+    HS_Ec_pc HS_test{E_c, p_c};
     
-    //cout << test;
-    
+    for (int j = 0; j < 2 * E_c + 1; j++) {
+        vector<vector<int>> HS_sector = HS_test.HS_tot[j]; 
+        cout << "j = " << j << ", momentum = " <<  j - E_c << ", states :\n";
+        
+        for (int l = 0; l < HS_sector.size(); l++){
+            vector<int> alpha_curr = HS_sector[l];
+            for (int x : alpha_curr){
+                cout << " " << x;
+            }
+            cout << "\n";
+        }
+        
+                
+    }
+    */
     return 0;
 }
 
-/*
-    auto t1 = std::chrono::system_clock::now();
-    eigenstates_J_pm diagonalization_test(u, U_m, L, a, E_c, p_c);
-    auto t2 = high_resolution_clock::now();  
-    auto duration = duration_cast<milliseconds>(t2 - t1);
-    
-    cout << "Duration of full diagonalization " << duration.count() <<"ms \n";
-    */
-    /*
-    auto t1 = std::chrono::system_clock::now();
-    HS HS_test(p_c);
-    auto t2 = high_resolution_clock::now();  
-    auto duration = duration_cast<milliseconds>(t2 - t1);
-    cout << "Duration of HS " << duration.count() <<"ms \n";
-    
-    t1 = std::chrono::system_clock::now();
-    HS_Ec_pc HS_Ec_pc_test(E_c, p_c);
-    t2 = high_resolution_clock::now();  
-    duration = duration_cast<milliseconds>(t2 - t1);
-    cout << "Duration of HS_Ec_pc " << duration.count() <<"ms \n";
-    
-    for (int l = 0; l < 2 * p_c + 1; l++){   
-        int counter = 0;
-        vector<vector<int>> m_sec_curr_HS = HS_test.HS_tot[l];
-        vector<vector<int>> m_sec_curr_HS_Ec_pc = HS_Ec_pc_test.HS_tot[l];
-        
-        cout << "l = " << l << ", size of sector " << m_sec_curr_HS.size() << " vs"
-                << m_sec_curr_HS_Ec_pc.size() << "\n";
-        cout << "--------------------------------------\n";
-        
-        for (int j = 0; j < m_sec_curr_HS_Ec_pc.size(); j++){
-            vector<int> ES_1 = m_sec_curr_HS[j];
-            vector<int> ES_2 = m_sec_curr_HS_Ec_pc[j];
-            
-            for (int k = 0; k < 2 * p_c; k++){
-                if (abs(ES_1[k] - ES_2[k]) > 0){
-                    cout << "Attention";
-                }               
-            }
-        }
-        cout << "--------------------------------------\n";
-        
-        /*
-        for (vector<int> oc_n : m_sec_curr_HS){
-            //counter += 1;
-            //cout << "state number " << counter << " in sector " << l << "\n";
-            for (int n : oc_n){                   
-                cout << n << ", ";
-            }
-            cout << "\n";            
-        }
-        
-        for (vector<int> oc_n : m_sec_curr_HS_Ec_pc){
-            //counter += 1;
-            //cout << "state number " << counter << " in sector " << l << "\n";
-            for (int n : oc_n){                   
-                cout << n << ", ";
-            }
-            cout << "\n";            
-        }
-        cout << "--------------------------------------\n";*/
-    
-    
-    /* 
-    vector<int> beta_1 = {0,2,0,0,0,0};
-    
-    vector<int> beta_2 = {0,0,0,0,2,0};
-    
-    beta_1 = {3,0,0,0,5,5};
-    
-    beta_2 = {6,0,0,2,2,6};
-    
 
+/*
+vector<int> alpha_test = {0, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0};
+    
+    cout << "P(alpha) = " << momentum_mi(alpha_test) << "\n"; 
+    cout << "energy(alpha) = " << energy_H0_reg(10 * L, alpha_test, gamma) << "\n"; 
     
     
-    HS hd_test(p_c);
+    // Calculate eigenstates
+    eigenstates_J_pm ES(v_F, K, U_m, L, a, gamma, E_c, p_c, threads);
     
-    vector<int> beta_1 = hd_test.HS_tot[0][0];
-    vector<int> beta_2 = hd_test.HS_tot[0][int(p_c/4)];
-   
-    auto t1 = std::chrono::system_clock::now();
+    int l1 = 4;
+    int l2 = 8;
     
-    double ma = H1_B_matrix_element(beta_1, beta_2, L, a);
+    // Get eigensolver for l
+    Eigen::SelfAdjointEigenSolver<M> solver_curr_J_1_l1 = ES.energies_ES_sector_wise_J_1[l1]; 
+    Eigen::SelfAdjointEigenSolver<M> solver_curr_J_1_l2 = ES.energies_ES_sector_wise_J_1[l2]; 
     
-    auto t2 = high_resolution_clock::now();  
-    auto duration = duration_cast<nanoseconds>(t2 - t1);
-    cout << "Matrix element " << ma << ", duration " << duration.count() <<"ns \n";
-     */
-    /*
-    cout << ma;
-    HS hd_test(p_c);
-     */ 
+    // Hamiltonian matrix
+    vector<vector<int>> HS_sector = ES.HS_truncated.HS_tot[l1];    
+    M H_Luttinger_J_1_block = H_Luttinger_J(v_F, K, U_m, L, a, gamma, HS_sector, 1);
     
-    /*
-    HS hd_test(p_c);        
+    // extract some eigenvector and eigenvalue for testing
+    int k = 3;
     
-    for (int l = 0; l < 2 * p_c + 1; l++){          
-        vector<vector<int>> m_sec_curr = hd_test.HS_tot[l];
+    Eigen::VectorXcd eigenvector_test = solver_curr_J_1_l1.eigenvectors().col(k);    
+    double energy_test = solver_curr_J_1_l1.eigenvalues()(k);
+    
+    //cout << "energy: " << energy_test << "\n";
+    //cout << "eigenvector " <<  "\n" << eigenvector_test <<  "\n";
+    //cout << "test eigenvalue: " << eigenvector_test.dot(H_Luttinger_J_1_block * eigenvector_test) << "\n";
+    //cout << "test overlap" << pow((solver_curr_J_1_l1.eigenvectors().adjoint() 
+            //* solver_curr_J_1_l2.eigenvectors()).norm(), 2) << "\n";
+    cout << "energies l1 = " << l1 << "\n" << solver_curr_J_1_l1.eigenvalues() <<  "\n";
+    cout << "energies l2 = " << l2 << "\n" << solver_curr_J_1_l2.eigenvalues() <<  "\n";
+    
+    double prefactor = gamma * 2 * M_PI / L;
+    
+    for (int j = 0; j < HS_sector.size(); j++){
+        vector<int> alpha_curr = HS_sector[j];
+        cout << "-------------- \n";
+        cout << "j = " << j << ", energy = " << energy_H0(alpha_curr) 
+                << ", energy_reg = " << energy_H0_reg(L, alpha_curr, gamma) << "\n";
+        cout << "alpha = ";
         
-        auto t1 = std::chrono::system_clock::now();
+        for (int x : alpha_curr){
+            cout << " " << x;
+        }
+        cout << "\n P(alpha) = " << momentum_mi(alpha_curr);
         
-        M H1_block = H1_B(L, a, m_sec_curr);           
-        auto t2 = high_resolution_clock::now();
+        Eigen::VectorXcd eigenvector_curr = solver_curr_J_1_l2.eigenvectors().col(j);
+                
+        cout << "\n Eigenstate norm " << eigenvector_curr.norm() <<"\n";
         
-        auto duration = duration_cast<milliseconds>(t2 - t1);
+        for (int m = 0; m < eigenvector_curr.size() ; m++){
+            cout << eigenvector_curr[m] << " ";
+        }
         
-        cout << "Current momentum sector " << l - p_c << ", size of sector " << m_sec_curr.size() <<"\n";
-        cout << ", duration " << duration.count() <<"ms \n";
+        cout << "\n";
     }
     */
-    /*
-    HS hd_test(p_c);
-    
-    
-    cout << hd_test.HS_tot.size() << "\n";
-    
-    
-    for (int l = 0; l < 2 * p_c + 1; l++){   
-        int counter = 0;
-        vector<vector<int>> m_sec_curr = hd_test.HS_tot[l];
-        
-        cout << "l = " << l << ", size of sector " << m_sec_curr.size() << "\n";
-        
-        for (vector<int> oc_n : m_sec_curr){
-            counter += 1;
-            cout << "state number " << counter << " in sector " << l << "\n";
-            for (int n : oc_n){                   
-                cout << n << ", ";
-            }
-            cout << "\n";            
-        }
-    }*/
-    
-    
-    
 
     
     
