@@ -1,10 +1,10 @@
-v_F 0.5
-K 0.75
-alpha 1
-U_m 0.75
+v_F 1
+K 0.7
+gamma 0.174207
+U_m 2
 L 100
 a 1
 E_c 12
-p_c 8
+p_c 12
 runNr 4
 threads 15

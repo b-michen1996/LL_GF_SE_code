@@ -204,7 +204,7 @@ double power_l_over_sqrt_Kl_mi(int r, double K, vector<int> alpha){
             sign = -1.;
         }
         if (alpha[l] > 0){
-        result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);
+            result = result * pow((1 + sign *  r *  K) / (2 * sqrt(K * abs(p_l))),  alpha[l]);
         };
         
     }
@@ -223,9 +223,9 @@ double power_l_over_sqrt_Kl_mi_reg(int r, double K, double L, double gamma, vect
     for (int l = 0; l < 2 * p_c; l++ ){
         // momentum of current index
         int p_l =  momentum(l, p_c);        
-        int sign = 1.;
+        int sign = 1;
         if (p_l < 0){
-            sign = -1.;
+            sign = -1;
         }
         if (alpha[l] > 0){
         result = result * pow(exp(-prefactor * abs(momentum(l, p_c))) 

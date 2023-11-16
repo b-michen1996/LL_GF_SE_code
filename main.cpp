@@ -33,42 +33,45 @@ typedef Eigen::MatrixXcd M;
  */
 int main(int argc, char** argv){   
     // some parameters
-    double v_F = 0.5;
-    double K = 1;
-    double L = 100;
-    double a = 1;        
-    double U_m = 0;
-    int E_c = 12;
+    double v_F = 1;
+    double K = 0.75;
+    double L = 1000;
+    double a = 0.01;        
+    double U_m = 0.75;
+    int E_c = 8;
     
-    double gamma = 0.001;
+    double gamma = 0.01;
+    //gamma = 8 * M_PI * log(2) / (L  *v_F);
+    
+    cout << gamma;
+    
     double eta = 0.01;
     
     double omega = 0.00;
     double beta = 10;
     
-    int runNr = 2;
+    int runNr = 7;
     int threads = 15;
     
-    int p_c = 12;
+    int p_c = 8;
     
     /*
     GF_SE_J_explicit(v_F, K, U_m, L, a, gamma, eta, E_c, p_c, omega, 
             beta, runNr, threads);
     */
     
-    /*
-    export_f_B(v_F, K, U_m, L, a, gamma, E_c, p_c,
-            runNr, threads);
-    */
+    export_f_B(v_F, K, U_m, L, a, gamma, E_c, p_c, runNr, threads);
+    
+    
     /*
     export_f_B_Klein_explicit(v_F, K, U_m, L, a, gamma, E_c, p_c,
             runNr, threads);
     */
   
-    
+    /*
     export_b_q_only(v_F, K, U_m, L, a, gamma, E_c, p_c,
             runNr, threads);
-    
+    */
     /*
     HS_Ec_pc HS_test{E_c, p_c};
     

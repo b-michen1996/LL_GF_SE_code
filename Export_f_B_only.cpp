@@ -12,6 +12,7 @@
 
 #include "Export_f_B_only.h"
 
+
 void export_f_B(double v_F, double K, double U_m, double L, double a, double gamma, 
         int E_c, int p_c, int runNr, int threads){
     /* Calculate only the matrix elements of the bosonic factors f_B_r and 
@@ -87,13 +88,13 @@ void export_f_B(double v_F, double K, double U_m, double L, double a, double gam
                 
             M f_B_R_curr_Fock_base = f_B_r(1, K, L, gamma, HS_sector_l1, HS_sector_l2);
             M f_B_L_curr_Fock_base = f_B_r(-1, K, L, gamma, HS_sector_l1, HS_sector_l2);  
-            
+                        
             // do matrix multiplication to obtain all scalar products
             M f_B_R_curr_ES_base = (Eigen_J_1_l1.eigenvectors().adjoint()) 
                     * (f_B_R_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
             M f_B_L_curr_ES_base = (Eigen_J_1_l1.eigenvectors().adjoint()) 
                     * (f_B_L_curr_Fock_base * Eigen_J_m1_l2.eigenvectors());
-            
+                        
             // write to file
             string filename_f_B_R= output_folder_f_B_R_curr + "/f_B_R_" + to_string(l_1) 
             + "_" + to_string(l_2) + ".csv"; 
@@ -244,7 +245,6 @@ void export_f_B_Klein_explicit(double v_F, double K, double U_m, double L, doubl
         }
     }
 }
-
 
 
 void write_f_B_to_file(M f, string filename){

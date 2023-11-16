@@ -62,6 +62,14 @@ def plot_spectrum(parameters, omega, beta, eta):
             a1.plot(k_vals, energies_im[:,0], color = color_curr,  linestyle = "--")
             a1.plot(k_vals, energies_re[:,1], color = color_curr,  linestyle = "-")
             a1.plot(k_vals, energies_im[:,1], color = color_curr,  linestyle = "--")  
+    
+    # calculate expectation
+    spectrum_expected_R = k_vals * (v_F / (2 * K))
+    spectrum_expected_L = -k_vals * (v_F / (2 * K))
+    
+    a1.plot(k_vals, spectrum_expected_R, color = "r", linestyle = "dashdot",
+            label = "Expected spectrum" ) 
+    a1.plot(k_vals, spectrum_expected_L, color = "r", linestyle = "dashdot") 
 
     #a1.set_xlim([-np.pi, np.pi])
     #a1.set_ylim([-2.5, 2.5])
@@ -89,9 +97,7 @@ def calc_spectrum_from_GF(GF, omega):
         GF_k[0,1] = GF[l, 1]
         GF_k[1,0] = GF[l, 2]
         GF_k[1,1] = GF[l, 3]
-        
-        print(GF_k)
-        
+
         # get effective Hamiltonian 
         H_e_k = 1j * np.zeros((2,2))
         
@@ -135,7 +141,10 @@ def calc_GF_from_f_B(parameters, omega, beta, eta):
         
     print("partition sum Z = ", Z)
     prefactor = (2 * np.pi * alpha / L) ** ((1-K)**2 / (2*K)) / Z
-
+    
+    check_f_B_R = 0
+    check_f_B_L = 0
+    
     # loop over all momenta from -p_c to p_c
     for l in range(0, 2 * p_c + 1):
         k = l - p_c
@@ -152,6 +161,9 @@ def calc_GF_from_f_B(parameters, omega, beta, eta):
             
             f_B_R = np.genfromtxt(filename_f_B_R_l1_l2, dtype=complex, delimiter=' ')
             f_B_L = np.genfromtxt(filename_f_B_L_l1_l2, dtype=complex, delimiter=' ')
+            
+            check_f_B_R += np.linalg.norm(f_B_R)
+            check_f_B_L += np.linalg.norm(f_B_L)
             
             # get energies 
             filename_energies_l1 = "energies/energies_J_1_" + str(l1) + ".csv"
@@ -188,7 +200,8 @@ def calc_GF_from_f_B(parameters, omega, beta, eta):
             # print(summation_sector(f_B_R, f_B_R, energies_l1, energies_l2, omega, beta, eta))
             # write to GF array
             GF[l, :] += prefactor * np.array([G_RR, G_RL, G_LR, G_LL])
-
+    print("check_f_B_R = " + str(check_f_B_R))
+    print("check_f_B_L = " + str(check_f_B_L))
     return GF
 
 
@@ -311,7 +324,8 @@ def main():
     omega= 0.
     beta = [1, 5, 10, 20]
     beta = [1, 2, 5, 10, 100]
-    eta = [0.01]
+    beta = [30]
+    eta = [0.001]
 
     
     

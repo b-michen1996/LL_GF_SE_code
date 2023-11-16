@@ -27,9 +27,7 @@ def plot_spectrum(parameters, omega, beta, eta):
     p_c = int(parameters[7,1]) 
     
     beta = np.array(beta)
-    eta = np.array(eta)
-    
-    
+    eta = np.array(eta)    
     
     title = (r"$v_F$ = " + str(v_F) +  r", K = " + str(K) +  r", $U_m$ = " + str(U_m) + r", $\gamma$ = " + str(alpha)
     + r", L = " + str(L)) + r", $E_c$ = " + str(E_c) + r", $p_c$ =" + str(p_c) 
@@ -62,6 +60,14 @@ def plot_spectrum(parameters, omega, beta, eta):
             a1.plot(k_vals, energies_im[:,0], color = color_curr,  linestyle = "--")
             a1.plot(k_vals, energies_re[:,1], color = color_curr,  linestyle = "-")
             a1.plot(k_vals, energies_im[:,1], color = color_curr,  linestyle = "--")  
+    
+    # calculate expectation
+    spectrum_expected_R = k_vals * (v_F / (2 * K))
+    spectrum_expected_L = -k_vals * (v_F / (2 * K))
+    
+    a1.plot(k_vals, spectrum_expected_R, color = "r", linestyle = "dashdot",
+            label = "Expected spectrum" ) 
+    a1.plot(k_vals, spectrum_expected_L, color = "r", linestyle = "dashdot") 
 
     #a1.set_xlim([-np.pi, np.pi])
     #a1.set_ylim([-2.5, 2.5])
@@ -199,7 +205,7 @@ def calc_GF_from_f_B(parameters, omega, beta, eta):
             G_RR_t2 = summation_sector(f_B_R_t2, f_B_R_t2, energies_l1_t2, energies_l2_t2, omega, beta, eta)
             G_RL_t2 = -1j * summation_sector(f_B_R_t2, f_B_L_t2, energies_l1_t2, energies_l2_t2, omega, beta, eta)
             G_LR_t2 = 1j * summation_sector(f_B_L_t2, f_B_R_t2, energies_l1_t2, energies_l2_t2, omega, beta, eta)
-            G_LL_t2 = summation_sector(f_B_L_t2, f_B_L_t1, energies_l1_t2, energies_l2_t2, omega, beta, eta)
+            G_LL_t2 = summation_sector(f_B_L_t2, f_B_L_t2, energies_l1_t2, energies_l2_t2, omega, beta, eta)
             
             #print("Differences between GF components for Klein terms t1 and t2 are", G_RR_t1 - G_RR_t2,  
             #      G_RL_t1 - G_RL_t2, G_LR_t1 - G_LR_t2, G_LL_t1 - G_LL_t2)
@@ -216,22 +222,6 @@ def calc_GF_from_f_B(parameters, omega, beta, eta):
 
 
 
-
-def summation_sector_old(f_B_r1, f_B_r2, energies_l1, energies_l2, omega, beta, eta):
-    """"Carry out the summation from the Kaellen-Lehmann representation for 
-    the given parameters"""
-    dim_l1 = len(energies_l1)
-    dim_l2 = len(energies_l2)
-    
-    result = 0j
-        
-    for j1 in range (0, dim_l1):
-        for j2 in range (0, dim_l2):
-            result = result + f_B_r1[j1, j2] * np.conj(f_B_r2[j1, j2]) *  (np.exp(-beta * energies_l1[j1]) 
-            + np.exp(-beta * energies_l2[j2]))/ (omega 
-                            + energies_l1[j1] - energies_l2[j2] + 1j * eta)
-
-    return result
 
 
 def summation_sector(f_B_r1, f_B_r2, energies_l1, energies_l2, omega, beta, eta):
@@ -252,8 +242,8 @@ def main():
     
     omega= 0.
     beta = [1, 5, 10, 20]
-    beta = [1, 2, 5, 10]
-    eta = [0.01]
+    beta = [20]
+    eta = [0.0001]
 
     
     

@@ -226,7 +226,8 @@ double f_B_r_matrix_element(int r, double K, double L, double gamma, vector<int>
             sign = -1.;
         }
         // calculate term in sum
-        result += sign * (power_l_over_sqrt_Kl_mi_reg(r, K, L, gamma, two_a_m_b1_m_b2)) / (factorial_mi(a_m_b1) 
+        result += sign * (power_l_over_sqrt_Kl_mi_reg(r, K, L, gamma, 
+                two_a_m_b1_m_b2)) / (factorial_mi(a_m_b1) 
                 * factorial_mi(a_m_b2) * factorial_mi(b1_p_b2_m_a)); 
         
         alpha = next_val(lower, upper, alpha);

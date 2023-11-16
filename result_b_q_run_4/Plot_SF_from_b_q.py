@@ -55,7 +55,7 @@ def plot_SF_bq(parameters, n_omega, beta, eta):
         # calculate GF
         GF = calc_GF_from_bq(parameters, omega, beta, eta)
         SF[j,:] = -(1 / np.pi) * GF.imag
-        W[j:] = omega * np.ones(2 * p_c)
+        W[j,:] = omega * np.ones(2 * p_c)
     
     for j in range(0 , p_c):
         K[:,j] = (j - p_c) * 2 * np.pi / L 
@@ -194,8 +194,8 @@ def main():
     # Read in data
     parameters = np.genfromtxt("parameters.csv", delimiter=' ')
     
-    beta = 1
-    eta = 0.01
+    beta = 100
+    eta = 0.001
     
     n_omega = 100
 
